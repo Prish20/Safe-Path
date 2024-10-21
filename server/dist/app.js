@@ -11,6 +11,7 @@ Object.defineProperty(exports, "default", {
 const _express = /*#__PURE__*/ _interop_require_default(require("express"));
 const _db = /*#__PURE__*/ _interop_require_default(require("./config/db"));
 require("dotenv/config");
+const _authroutes = /*#__PURE__*/ _interop_require_default(require("./routes/auth.routes"));
 function _interop_require_default(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj
@@ -23,5 +24,6 @@ app.use(_express.default.json({
 app.get('/', (_, res)=>{
     res.send('Root endpoint check ');
 });
+app.use("/api/auth", _authroutes.default);
 (0, _db.default)();
 const _default = app;

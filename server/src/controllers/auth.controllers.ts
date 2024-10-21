@@ -6,6 +6,7 @@ import crypto from "crypto";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import {
   sendResetPasswordEmail,
+  sendResetSuccessEmail,
   sendVerificationEmail,
   sendWelcomeEmail,
 } from "../mailtrap/email.js";
@@ -80,22 +81,18 @@ export const signin: RequestHandler = async (req, res): Promise<void> => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "Invalid email or password. Please try again.",
-        });
+      res.status(400).json({
+        success: false,
+        message: "Invalid email or password. Please try again.",
+      });
       return;
     }
     const isMatch = bcryptjs.compareSync(password, user.password);
     if (!isMatch) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "Invalid email or password. Please try again.",
-        });
+      res.status(400).json({
+        success: false,
+        message: "Invalid email or password. Please try again.",
+      });
       return;
     }
     generateTokenAndSetCookie(res, user._id);
@@ -127,12 +124,10 @@ export const forgotPassword: RequestHandler = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "The email does not exist.Please enter the correct email.",
-        });
+      res.status(400).json({
+        success: false,
+        message: "The email does not exist.Please enter the correct email.",
+      });
       return;
     }
     const resetToken = crypto.randomBytes(32).toString("hex");
@@ -144,14 +139,49 @@ export const forgotPassword: RequestHandler = async (req, res) => {
       user.email,
       `${process.env.CLIENT_URL}/reset-password/${resetToken}`
     );
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Password reset link sent to your email",
-      });
+    res.status(200).json({
+      success: true,
+      message: "Password reset link sent to your email",
+    });
   } catch (error) {
     console.error(`Error sending email: ${error}`);
+    res.status(500).json({ success: false, message: (error as any).message });
+  }
+};
+
+export const resetPassword: RequestHandler = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpiresAt: { $gt: Date.now() },
+    });
+    if (!user) {
+      res
+        .status(400)
+        .json({ success: false, message: "Invalid or expired reset token" });
+      return;
+    }
+    if (
+      !user.resetPasswordExpiresAt ||
+      user.resetPasswordExpiresAt.getTime() < Date.now()
+    ) {
+      res
+        .status(400)
+        .json({ success: false, message: "Invalid or expired reset token" });
+      return;
+    }
+    user.password = bcryptjs.hashSync(password, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiresAt = undefined;
+    await user.save();
+    await sendResetSuccessEmail(user.email);
+    res
+      .status(200)
+      .json({ success: true, message: "Password reset successfully" });
+  } catch (error) {
+    console.error(`Error resetting password: ${error}`);
     res.status(500).json({ success: false, message: (error as any).message });
   }
 };

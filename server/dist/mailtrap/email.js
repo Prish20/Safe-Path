@@ -12,6 +12,9 @@ _export(exports, {
     sendResetPasswordEmail: function() {
         return sendResetPasswordEmail;
     },
+    sendResetSuccessEmail: function() {
+        return sendResetSuccessEmail;
+    },
     sendVerificationEmail: function() {
         return sendVerificationEmail;
     },
@@ -77,6 +80,25 @@ const sendResetPasswordEmail = async (email, resetURL)=>{
             category: "Password Reset"
         });
         console.log("Reset Password Email sent successfully", response);
+    } catch (error) {
+        throw new Error(`Error sending email: ${error}`);
+    }
+};
+const sendResetSuccessEmail = async (email)=>{
+    const recipient = [
+        {
+            email
+        }
+    ];
+    try {
+        const response = await _mailtrapconfig.mailtrapclient.send({
+            from: _mailtrapconfig.sender,
+            to: recipient,
+            subject: "Password reset successful",
+            html: _eamailTemplate.PASSWORD_RESET_SUCCESS_TEMPLATE,
+            category: "Password Reset"
+        });
+        console.log("Password Reset Success Email sent successfully", response);
     } catch (error) {
         throw new Error(`Error sending email: ${error}`);
     }

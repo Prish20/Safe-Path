@@ -12,6 +12,9 @@ _export(exports, {
     forgotPassword: function() {
         return forgotPassword;
     },
+    resetPassword: function() {
+        return resetPassword;
+    },
     signin: function() {
         return signin;
     },
@@ -229,6 +232,47 @@ const forgotPassword = async (req, res)=>{
         });
     } catch (error) {
         console.error(`Error sending email: ${error}`);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+const resetPassword = async (req, res)=>{
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+        const user = await _usermodel.User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpiresAt: {
+                $gt: Date.now()
+            }
+        });
+        if (!user) {
+            res.status(400).json({
+                success: false,
+                message: "Invalid or expired reset token"
+            });
+            return;
+        }
+        if (!user.resetPasswordExpiresAt || user.resetPasswordExpiresAt.getTime() < Date.now()) {
+            res.status(400).json({
+                success: false,
+                message: "Invalid or expired reset token"
+            });
+            return;
+        }
+        user.password = _bcryptjs.default.hashSync(password, 10);
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpiresAt = undefined;
+        await user.save();
+        await (0, _email.sendResetSuccessEmail)(user.email);
+        res.status(200).json({
+            success: true,
+            message: "Password reset successfully"
+        });
+    } catch (error) {
+        console.error(`Error resetting password: ${error}`);
         res.status(500).json({
             success: false,
             message: error.message

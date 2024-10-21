@@ -23,6 +23,7 @@ const _usermodel = require("../models/user.model.js");
 const _bcryptjs = /*#__PURE__*/ _interop_require_default(require("bcryptjs"));
 const _generateVerificationToken = require("../utils/generateVerificationToken.js");
 const _generateTokenAndSetCookie = require("../utils/generateTokenAndSetCookie.js");
+const _email = require("../mailtrap/email.js");
 function _define_property(obj, key, value) {
     if (key in obj) {
         Object.defineProperty(obj, key, {
@@ -108,6 +109,7 @@ const signup = async (req, res)=>{
         });
         await user.save();
         (0, _generateTokenAndSetCookie.generateTokenAndSetCookie)(res, user._id);
+        await (0, _email.sendVerificationEmail)(user.email, verificationToken);
         res.status(201).json({
             message: "User created successfully",
             user: _object_spread_props(_object_spread({}, user.toObject()), {

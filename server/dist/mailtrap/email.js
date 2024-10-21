@@ -2,10 +2,18 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "sendVerificationEmail", {
-    enumerable: true,
-    get: function() {
+function _export(target, all) {
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: all[name]
+    });
+}
+_export(exports, {
+    sendVerificationEmail: function() {
         return sendVerificationEmail;
+    },
+    sendWelcomeEmail: function() {
+        return sendWelcomeEmail;
     }
 });
 const _mailtrapconfig = require("../config/mailtrap.config");
@@ -27,6 +35,27 @@ const sendVerificationEmail = async (email, token)=>{
         console.log("Email sent successfully");
     } catch (error) {
         console.error(`Error sending email: ${error}`);
+        throw new Error(`Error sending email: ${error}`);
+    }
+};
+const sendWelcomeEmail = async (email, firstName)=>{
+    const recipient = [
+        {
+            email
+        }
+    ];
+    try {
+        const response = await _mailtrapconfig.mailtrapclient.send({
+            from: _mailtrapconfig.sender,
+            to: recipient,
+            template_uuid: "e1eae50b-883f-49ad-870f-d83381b2341e",
+            template_variables: {
+                name: firstName,
+                company_info_name: "Safe Path Platform"
+            }
+        });
+        console.log("Welcome Email sent successfully", response);
+    } catch (error) {
         throw new Error(`Error sending email: ${error}`);
     }
 };

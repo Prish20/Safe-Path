@@ -19,4 +19,5 @@ const router = _express.default.Router();
 router.post("/signup", _authcontrollers.signup);
 router.post("/signin", _authcontrollers.signin);
 router.post("/signout", _authcontrollers.signout);
+router.post("/verify-email", _authcontrollers.verifyEmail);
 const _default = router;

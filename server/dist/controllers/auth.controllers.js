@@ -17,6 +17,9 @@ _export(exports, {
     },
     signup: function() {
         return signup;
+    },
+    verifyEmail: function() {
+        return verifyEmail;
     }
 });
 const _usermodel = require("../models/user.model.js");
@@ -120,6 +123,37 @@ const signup = async (req, res)=>{
         res.status(400).json({
             error: "Something went wrong"
         });
+    }
+};
+const verifyEmail = async (req, res)=>{
+    const { code } = req.body;
+    try {
+        const user = await _usermodel.User.findOne({
+            verificationToken: code,
+            verificationTokenExpiresAt: {
+                $gt: Date.now()
+            }
+        });
+        if (!user) {
+            res.status(400).json({
+                error: "Invalid or expired verification code"
+            });
+            return;
+        }
+        user.isVerified = true;
+        user.verificationToken = undefined;
+        user.verificationTokenExpiresAt = undefined;
+        await user.save();
+        await (0, _email.sendWelcomeEmail)(user.email, user.firstName);
+        res.status(200).json({
+            success: true,
+            message: "Email verified successfully",
+            user: _object_spread_props(_object_spread({}, user.toObject()), {
+                password: undefined
+            })
+        });
+    } catch (error) {
+        throw new Error(`Error verifying email: ${error}`);
     }
 };
 const signin = async (req, res)=>{

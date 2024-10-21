@@ -159,6 +159,9 @@ const verifyEmail = async (req, res)=>{
 const signin = async (req, res)=>{
     res.send("Signin route");
 };
-const signout = async (req, res)=>{
-    res.send("Signout route");
+const signout = async (_, res)=>{
+    res.clearCookie("token");
+    res.status(200).json({
+        message: "Signout successful"
+    });
 };

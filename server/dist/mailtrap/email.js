@@ -9,6 +9,9 @@ function _export(target, all) {
     });
 }
 _export(exports, {
+    sendResetPasswordEmail: function() {
+        return sendResetPasswordEmail;
+    },
     sendVerificationEmail: function() {
         return sendVerificationEmail;
     },
@@ -55,6 +58,25 @@ const sendWelcomeEmail = async (email, firstName)=>{
             }
         });
         console.log("Welcome Email sent successfully", response);
+    } catch (error) {
+        throw new Error(`Error sending email: ${error}`);
+    }
+};
+const sendResetPasswordEmail = async (email, resetURL)=>{
+    const recipient = [
+        {
+            email
+        }
+    ];
+    try {
+        const response = await _mailtrapconfig.mailtrapclient.send({
+            from: _mailtrapconfig.sender,
+            to: recipient,
+            subject: "Reset your password",
+            html: _eamailTemplate.PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetURL),
+            category: "Password Reset"
+        });
+        console.log("Reset Password Email sent successfully", response);
     } catch (error) {
         throw new Error(`Error sending email: ${error}`);
     }

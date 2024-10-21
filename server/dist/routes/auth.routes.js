@@ -20,4 +20,5 @@ router.post("/signup", _authcontrollers.signup);
 router.post("/signin", _authcontrollers.signin);
 router.post("/signout", _authcontrollers.signout);
 router.post("/verify-email", _authcontrollers.verifyEmail);
+router.post("/forgot-password", _authcontrollers.forgotPassword);
 const _default = router;

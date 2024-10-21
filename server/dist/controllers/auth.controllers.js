@@ -9,6 +9,9 @@ function _export(target, all) {
     });
 }
 _export(exports, {
+    forgotPassword: function() {
+        return forgotPassword;
+    },
     signin: function() {
         return signin;
     },
@@ -25,6 +28,7 @@ _export(exports, {
 const _usermodel = require("../models/user.model.js");
 const _bcryptjs = /*#__PURE__*/ _interop_require_default(require("bcryptjs"));
 const _generateVerificationToken = require("../utils/generateVerificationToken.js");
+const _crypto = /*#__PURE__*/ _interop_require_default(require("crypto"));
 const _generateTokenAndSetCookie = require("../utils/generateTokenAndSetCookie.js");
 const _email = require("../mailtrap/email.js");
 function _define_property(obj, key, value) {
@@ -157,11 +161,77 @@ const verifyEmail = async (req, res)=>{
     }
 };
 const signin = async (req, res)=>{
-    res.send("Signin route");
+    const { email, password } = req.body;
+    try {
+        const user = await _usermodel.User.findOne({
+            email
+        });
+        if (!user) {
+            res.status(400).json({
+                success: false,
+                message: "Invalid email or password. Please try again."
+            });
+            return;
+        }
+        const isMatch = _bcryptjs.default.compareSync(password, user.password);
+        if (!isMatch) {
+            res.status(400).json({
+                success: false,
+                message: "Invalid email or password. Please try again."
+            });
+            return;
+        }
+        (0, _generateTokenAndSetCookie.generateTokenAndSetCookie)(res, user._id);
+        user.lastLogin = new Date();
+        await user.save();
+        res.status(200).json({
+            success: true,
+            message: "Signin successful",
+            user: _object_spread_props(_object_spread({}, user.toObject()), {
+                password: undefined
+            })
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Something went wrong"
+        });
+    }
 };
 const signout = async (_, res)=>{
     res.clearCookie("token");
     res.status(200).json({
         message: "Signout successful"
     });
+};
+const forgotPassword = async (req, res)=>{
+    const { email } = req.body;
+    try {
+        const user = await _usermodel.User.findOne({
+            email
+        });
+        if (!user) {
+            res.status(400).json({
+                success: false,
+                message: "The email does not exist.Please enter the correct email."
+            });
+            return;
+        }
+        const resetToken = _crypto.default.randomBytes(32).toString("hex");
+        const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpiresAt = new Date(resetTokenExpiresAt);
+        await user.save();
+        await (0, _email.sendResetPasswordEmail)(user.email, `${process.env.CLIENT_URL}/reset-password/${resetToken}`);
+        res.status(200).json({
+            success: true,
+            message: "Password reset link sent to your email"
+        });
+    } catch (error) {
+        console.error(`Error sending email: ${error}`);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 };

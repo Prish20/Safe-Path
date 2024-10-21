@@ -2,8 +2,13 @@ import { RequestHandler, Response } from "express";
 import { User } from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { generateVerificationToken } from "../utils/generateVerificationToken.js";
+import crypto from "crypto";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
-import { sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/email.js";
+import {
+  sendResetPasswordEmail,
+  sendVerificationEmail,
+  sendWelcomeEmail,
+} from "../mailtrap/email.js";
 
 export const signup: RequestHandler = async (req, res): Promise<void> => {
   const { firstName, lastName, email, password } = req.body;
@@ -70,11 +75,83 @@ export const verifyEmail: RequestHandler = async (req, res): Promise<void> => {
   }
 };
 
-export const signin = async (req: any, res: Response) => {
-  res.send("Signin route");
+export const signin: RequestHandler = async (req, res): Promise<void> => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      res
+        .status(400)
+        .json({
+          success: false,
+          message: "Invalid email or password. Please try again.",
+        });
+      return;
+    }
+    const isMatch = bcryptjs.compareSync(password, user.password);
+    if (!isMatch) {
+      res
+        .status(400)
+        .json({
+          success: false,
+          message: "Invalid email or password. Please try again.",
+        });
+      return;
+    }
+    generateTokenAndSetCookie(res, user._id);
+    user.lastLogin = new Date();
+    await user.save();
+    res.status(200).json({
+      success: true,
+      message: "Signin successful",
+      user: {
+        ...user.toObject(),
+        password: undefined,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
 };
 
 export const signout = async (_: any, res: Response) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Signout successful" });
+};
+
+export const forgotPassword: RequestHandler = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      res
+        .status(400)
+        .json({
+          success: false,
+          message: "The email does not exist.Please enter the correct email.",
+        });
+      return;
+    }
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiresAt = new Date(resetTokenExpiresAt);
+    await user.save();
+    await sendResetPasswordEmail(
+      user.email,
+      `${process.env.CLIENT_URL}/reset-password/${resetToken}`
+    );
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Password reset link sent to your email",
+      });
+  } catch (error) {
+    console.error(`Error sending email: ${error}`);
+    res.status(500).json({ success: false, message: (error as any).message });
+  }
 };

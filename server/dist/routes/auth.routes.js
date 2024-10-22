@@ -10,12 +10,15 @@ Object.defineProperty(exports, "default", {
 });
 const _express = /*#__PURE__*/ _interop_require_default(require("express"));
 const _authcontrollers = require("../controllers/auth.controllers.js");
+const _verifyToken = require("../middlewares/verifyToken.js");
 function _interop_require_default(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj
     };
 }
 const router = _express.default.Router();
+// Check auth status route
+router.get("/check-auth", _verifyToken.verifyToken, _authcontrollers.checkAuth);
 // Authentication routes
 router.post("/signup", _authcontrollers.signup);
 router.post("/signin", _authcontrollers.signin);

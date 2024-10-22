@@ -11,6 +11,12 @@ import {
   sendWelcomeEmail,
 } from "../mailtrap/email.js";
 
+import { Request } from "express";
+
+interface CustomRequest extends Request {
+  userId?: string;
+}
+
 export const signup: RequestHandler = async (req, res): Promise<void> => {
   const { firstName, lastName, email, password } = req.body;
   try {
@@ -182,6 +188,23 @@ export const resetPassword: RequestHandler = async (req, res) => {
       .json({ success: true, message: "Password reset successfully" });
   } catch (error) {
     console.error(`Error resetting password: ${error}`);
+    res.status(500).json({ success: false, message: (error as any).message });
+  }
+};
+
+export const checkAuth: RequestHandler = async (req: CustomRequest, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+    if (!user) {
+      res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
+    }
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.error(`Error checking auth: ${error}`);
     res.status(500).json({ success: false, message: (error as any).message });
   }
 };

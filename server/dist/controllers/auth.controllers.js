@@ -9,6 +9,9 @@ function _export(target, all) {
     });
 }
 _export(exports, {
+    checkAuth: function() {
+        return checkAuth;
+    },
     forgotPassword: function() {
         return forgotPassword;
     },
@@ -273,6 +276,28 @@ const resetPassword = async (req, res)=>{
         });
     } catch (error) {
         console.error(`Error resetting password: ${error}`);
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+const checkAuth = async (req, res)=>{
+    try {
+        const user = await _usermodel.User.findById(req.userId).select("-password");
+        if (!user) {
+            res.status(401).json({
+                success: false,
+                message: "User not found"
+            });
+            return;
+        }
+        res.status(200).json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        console.error(`Error checking auth: ${error}`);
         res.status(500).json({
             success: false,
             message: error.message

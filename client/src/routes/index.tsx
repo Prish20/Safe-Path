@@ -1,25 +1,25 @@
-import { lazy } from 'react';
+import { lazy } from "react";
 
 // dom router
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes } from "react-router-dom";
 
 // layouts
-import AuthLayout from '@/layouts/AuthLayout';
-import DashboardLayout from '@/layouts/DashboardLayout';
+import AuthLayout from "@/layouts/AuthLayout";
+import DashboardLayout from "@/layouts/DashboardLayout";
 
 // components
-import Loadable from '@/components/Loadable';
-import NotFound from '@/pages/NotFound';
+import Loadable from "@/components/Loadable";
+import NotFound from "@/components/pages/NotFound";
+// import SignIn from ;
 
 // Import Components
-const SignIn = Loadable(lazy(() => import('@/pages/auth/SignIn')));
-const SignUp = Loadable(lazy(() => import('@/pages/auth/Register')));
+const SignIn = Loadable(lazy(() => import("@/components/pages/auth/SignIn")));
+const SignUp = Loadable(lazy(() => import("@/components/pages/auth/Register")));
 
 // DASHBOARD
 const DashboardHome = Loadable(
-  lazy(() => import('@/pages/dashboard/Home'))
+  lazy(() => import("@/components/pages/dashboard/Home"))
 );
-
 
 /**
  * Define Root Redirect
@@ -27,7 +27,7 @@ const DashboardHome = Loadable(
 // Root redirection component
 const RootRedirect = () => {
   // Check Auth Status and redirect appropriately
-  const isAuthenticated = true;
+  const isAuthenticated = false;
   return isAuthenticated ? (
     <Navigate to="/dashboard" replace />
   ) : (
@@ -42,27 +42,27 @@ const RootRedirect = () => {
 export default function Router() {
   return useRoutes([
     {
-      path: '/',
+      path: "/",
       element: <RootRedirect />,
     },
     {
-      path: 'auth',
+      path: "auth",
       element: <AuthLayout />,
       children: [
         { index: true, element: <Navigate to="/auth/login" replace /> },
-        { path: 'login', element: <SignIn /> },
-        { path: 'register', element: <SignUp /> },
+        { path: "login", element: <SignIn /> },
+        { path: "register", element: <SignUp /> },
       ],
     },
     {
-      path: 'dashboard',
+      path: "dashboard",
       element: <DashboardLayout />,
       children: [
         { index: true, element: <Navigate to="/dashboard/home" replace /> },
-        { path: 'home', element: <DashboardHome /> },
+        { path: "home", element: <DashboardHome /> },
 
         {
-          path: '*',
+          path: "*",
           element: (
             <NotFound
               route="/dashboard/home"
@@ -73,6 +73,6 @@ export default function Router() {
         },
       ],
     },
-    { path: '*', element: <NotFound /> },
+    { path: "*", element: <NotFound /> },
   ]);
 }

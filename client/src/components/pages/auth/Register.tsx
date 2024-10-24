@@ -1,15 +1,80 @@
-import { motion } from "framer-motion";
+// Register.tsx
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { CustomInput } from "@/components/customComponents/customInput";
-import { CircleArrowRight, Mail, Eye, EyeOff } from "lucide-react";
-import { LockKeyhole } from "lucide-react";
-import { UserRound } from "lucide-react";
+import {
+  CircleArrowRight,
+  Mail,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  UserRound,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import PasswordStrengthMeter from "@/components/common/PassStrength";
+import { z } from "zod";
+import { registerSchema } from "@/lib/validationSchema";
+
+interface Errors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
 
 const Register = () => {
-  // State to toggle password visibility
+  // State management for form inputs
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // State for password visibility toggles
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // State for form errors
+  const [errors, setErrors] = useState<Errors>({});
+
+  // Handler for form submission
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      // Validate form data using the imported schema
+      registerSchema.parse({
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
+      });
+
+      // If validation passes, proceed with form submission (e.g., API call)
+      console.log("Form submitted successfully");
+
+      // Reset errors
+      setErrors({});
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Errors = {};
+        error.errors.forEach((err) => {
+          const path = err.path[0] as keyof Errors;
+          fieldErrors[path] = err.message;
+        });
+        setErrors(fieldErrors);
+      }
+    }
+  };
+
+  // Handler for Google Sign-In
+  const handleGoogleSignIn = () => {
+    // Implement Google Sign-In logic here
+    console.log("Google Sign-In clicked");
+  };
 
   return (
     <div className="flex justify-center items-center rounded-xl bg-gradient-to-r from-gray-800 to-gray-900">
@@ -23,66 +88,118 @@ const Register = () => {
           <h2 className="text-3xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">
             Create your account
           </h2>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex w-full flex-col gap-4 mt-6 md:flex-row md:gap-4">
-              <CustomInput
-                icon={<UserRound className="text-emerald-500" />}
-                iconPosition="left"
-                placeholder="First name"
-                className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
-              />
-              <CustomInput
-                icon={<UserRound className="text-emerald-500" />}
-                iconPosition="left"
-                placeholder="Last name"
-                className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
-              />
+              <div className="w-full">
+                <CustomInput
+                  icon={<UserRound className="text-emerald-500" />}
+                  iconPosition="left"
+                  placeholder="First name"
+                  aria-label="First name"
+                  className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                {errors.firstName && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.firstName}
+                  </p>
+                )}
+              </div>
+              <div className="w-full">
+                <CustomInput
+                  icon={<UserRound className="text-emerald-500" />}
+                  iconPosition="left"
+                  placeholder="Last name"
+                  aria-label="Last name"
+                  className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+                {errors.lastName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                )}
+              </div>
             </div>
-            <CustomInput
-              icon={<Mail className="text-emerald-500" />}
-              iconPosition="left"
-              placeholder="Email"
-              className="mt-4 bg-gray-800 border-none rounded-md focus:ring-emerald-500"
-            />
-
+            <div className="mt-4">
+              <CustomInput
+                icon={<Mail className="text-emerald-500" />}
+                iconPosition="left"
+                placeholder="Email"
+                aria-label="Email"
+                type="email"
+                className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
             {/* Password Input with Toggle View */}
             <div className="relative mt-4">
               <CustomInput
                 icon={<LockKeyhole className="text-emerald-500" />}
                 iconPosition="left"
                 placeholder="Password"
+                aria-label="Password"
                 type={showPassword ? "text" : "password"}
                 className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              <span
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+              <button
+                type="button"
+                aria-label="Toggle password visibility"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </span>
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
-
             {/* Confirm Password Input with Toggle View */}
             <div className="relative mt-4">
               <CustomInput
                 icon={<LockKeyhole className="text-emerald-500" />}
                 iconPosition="left"
                 placeholder="Confirm Password"
+                aria-label="Confirm Password"
                 type={showConfirmPassword ? "text" : "password"}
                 className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <span
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+              <button
+                type="button"
+                aria-label="Toggle confirm password visibility"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </span>
+                {showConfirmPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
+            <PasswordStrengthMeter password={password} />
 
             <Button
               size="lg"
               type="submit"
-              className="mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl hover:shadow-emerald-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+              className="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl hover:shadow-emerald-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
             >
               Register your account
             </Button>
@@ -93,12 +210,19 @@ const Register = () => {
           <Button
             size="lg"
             className="mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl hover:shadow-emerald-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+            onClick={handleGoogleSignIn}
           >
             <div className="flex justify-center items-center gap-2">
               <CircleArrowRight />
               Continue with Google
             </div>
           </Button>
+          <div className="flex flex-row justify-center mt-4 gap-2">
+            <p className="text-gray-400">Already have an account?</p>
+            <span className="text-emerald-500 underline">
+              <Link to="/auth/login">Login here</Link>
+            </span>
+          </div>
         </div>
       </motion.div>
     </div>

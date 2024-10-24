@@ -1,78 +1,76 @@
-import { lazy } from "react";
+import { lazy, ComponentType, Suspense } from 'react';
+import { Navigate, useRoutes, RouteObject } from 'react-router-dom';
 
-// dom router
-import { Navigate, useRoutes } from "react-router-dom";
+// Layouts (lazy loaded)
+const DashboardLayout = lazy(() => import('@/layouts/DashboardLayout'));
 
-// layouts
-import AuthLayout from "@/layouts/AuthLayout";
-import DashboardLayout from "@/layouts/DashboardLayout";
+// Pages (lazy loaded)
+const SignIn = lazy(() => import('@/components/pages/auth/SignIn'));
+const SignUp = lazy(() => import('@/components/pages/auth/Register'));
+const DashboardHome = lazy(() => import('@/components/pages/dashboard/Home'));
+const NotFound = lazy(() => import('@/components/pages/NotFound'));
 
-// components
-import Loadable from "@/components/Loadable";
-import NotFound from "@/components/pages/NotFound";
-// import SignIn from ;
+// Components
+// import Loadable from '@/components/Loadable';
 
-// Import Components
-const SignIn = Loadable(lazy(() => import("@/components/pages/auth/SignIn")));
-const SignUp = Loadable(lazy(() => import("@/components/pages/auth/Register")));
+// Route Paths
+const AUTH_PATH = {
+  login: '/auth/login',
+  register: '/auth/register',
+};
 
-// DASHBOARD
-const DashboardHome = Loadable(
-  lazy(() => import("@/components/pages/dashboard/Home"))
-);
+const DASHBOARD_PATH = {
+  home: '/dashboard/home',
+};
 
-/**
- * Define Root Redirect
- */
-// Root redirection component
+// Root Redirect Handler
 const RootRedirect = () => {
-  // Check Auth Status and redirect appropriately
-  const isAuthenticated = false;
+  const isAuthenticated = false; // Replace with real auth check
   return isAuthenticated ? (
-    <Navigate to="/dashboard" replace />
+    <Navigate to={DASHBOARD_PATH.home} replace />
   ) : (
-    <Navigate to="/auth/login" replace />
+    <Navigate to={AUTH_PATH.login} replace />
   );
 };
+
+// Lazy Loadable Wrapper
+const withLoadable = (Component: React.LazyExoticComponent<ComponentType<object>>) => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <Component />
+  </Suspense>
+);
+
+// Route Configuration
+const routes: RouteObject[] = [
+  {
+    path: '/',
+    element: <RootRedirect />,
+  },
+  // Auth routes without AuthLayout
+  { path: 'auth/login', element: withLoadable(SignIn) },
+  { path: 'auth/register', element: withLoadable(SignUp) },
+  {
+    path: 'dashboard',
+    element: withLoadable(DashboardLayout),
+    children: [
+      { index: true, element: <Navigate to={DASHBOARD_PATH.home} replace /> },
+      { path: 'home', element: withLoadable(DashboardHome) },
+      {
+        path: '*',
+        element: withLoadable(NotFound),
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: withLoadable(NotFound),
+  },
+];
 
 /**
  * Define Router for the Application
  * @returns Router Component for Navigation.
  */
 export default function Router() {
-  return useRoutes([
-    {
-      path: "/",
-      element: <RootRedirect />,
-    },
-    {
-      path: "auth",
-      element: <AuthLayout />,
-      children: [
-        { index: true, element: <Navigate to="/auth/login" replace /> },
-        { path: "login", element: <SignIn /> },
-        { path: "register", element: <SignUp /> },
-      ],
-    },
-    {
-      path: "dashboard",
-      element: <DashboardLayout />,
-      children: [
-        { index: true, element: <Navigate to="/dashboard/home" replace /> },
-        { path: "home", element: <DashboardHome /> },
-
-        {
-          path: "*",
-          element: (
-            <NotFound
-              route="/dashboard/home"
-              buttonText="Back to dashboard"
-              subtext="Route does not exist. Please confirm."
-            />
-          ),
-        },
-      ],
-    },
-    { path: "*", element: <NotFound /> },
-  ]);
+  return useRoutes(routes);
 }

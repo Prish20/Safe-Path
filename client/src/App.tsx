@@ -33,7 +33,7 @@ const App = () => {
         <ContainerLayout>
           <AuthProvider>
             <AuthGuard>
-              <Router />
+                <Router />
             </AuthGuard>
           </AuthProvider>
         </ContainerLayout>

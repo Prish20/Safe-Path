@@ -3,8 +3,11 @@ import { createContext, ReactNode, useMemo, useState } from "react";
 /* TODO: create authentification methods */
 const defaultAuthContext = {
   user: {
-    username: "",
+    firstName: "",
+    lastName: "",
+    email: "",
     isAuthenticated: false,
+    isProcessing: false,
   },
   signup: null,
   login: null,
@@ -22,8 +25,11 @@ export const AuthContext =
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user] = useState({
-    username: "JohnDoe",
+    firstName: "JohnDoe",
+    lastName: "Doe",
+    email: "john.doe@example.com",
     isAuthenticated: false,
+    isProcessing: false,
   });
 
   const authContextValue = useMemo(() => {

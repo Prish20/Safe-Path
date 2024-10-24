@@ -7,7 +7,15 @@ const useAuth = () => {
   if (!authContext)
     throw new Error("Using authentification hook outside its provider.");
 
-  return authContext;
+  return {
+    ...authContext,
+    user: {
+      ...authContext.user,
+    },
+    signUp: () => {
+      // TODO: Implement sign up logic
+    },
+  };
 };
 
 export default useAuth;

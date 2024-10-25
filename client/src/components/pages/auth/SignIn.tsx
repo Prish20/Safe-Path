@@ -2,7 +2,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { CustomInput } from "@/components/customComponents/customInput";
-import { Mail, Eye, EyeOff, LockKeyhole, CircleArrowRight } from "lucide-react";
+import {
+  Mail,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  CircleArrowRight,
+  Loader,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { z } from "zod";
@@ -17,6 +24,7 @@ const SignIn = () => {
   // State management for form inputs
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // State for password visibility toggle
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +33,7 @@ const SignIn = () => {
   const [errors, setErrors] = useState<Errors>({});
 
   // Handler for form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -35,11 +43,23 @@ const SignIn = () => {
         password,
       });
 
-      // If validation passes, proceed with form submission (e.g., API call)
-      console.log("Sign-in form submitted successfully");
-
       // Reset errors
       setErrors({});
+
+      // Set isLoading to true to indicate loading state
+      setIsLoading(true);
+
+      // Simulate form submission delay (e.g., API call)
+      // Replace this with your actual API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // If submission is successful
+      console.log("Sign-in form submitted successfully");
+
+      // Reset isLoading to false
+      setIsLoading(false);
+
+      // Optionally, redirect the user to another page
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Errors = {};
@@ -48,7 +68,13 @@ const SignIn = () => {
           fieldErrors[path] = err.message;
         });
         setErrors(fieldErrors);
+      } else {
+        // Handle other types of errors (e.g., network errors)
+        console.error("An error occurred during sign-in:", error);
       }
+
+      // Reset isLoading to false in case of error
+      setIsLoading(false);
     }
   };
 
@@ -81,6 +107,7 @@ const SignIn = () => {
                 className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -97,12 +124,14 @@ const SignIn = () => {
                 className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
               <button
                 type="button"
                 aria-label="Toggle password visibility"
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={isLoading}
               >
                 {showPassword ? (
                   <EyeOff className="w-4 h-4" />
@@ -115,12 +144,32 @@ const SignIn = () => {
               )}
             </div>
 
+            {/* Forgot Password Link */}
+            <div className="mt-2 text-left">
+              <Link
+                to="/auth/forgot-password"
+                className="text-emerald-500 hover:underline text-sm"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
             <Button
               size="lg"
               type="submit"
-              className="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl hover:shadow-emerald-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+              className={`mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl transition-all duration-300 ease-in-out transform ${
+                !isLoading ? "hover:shadow-emerald-600 hover:-translate-y-1" : ""
+              }`}
+              disabled={isLoading}
             >
-              Sign In
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <Loader className="animate-spin mr-2 w-5 h-5" />
+                  Signing In...
+                </div>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
 
@@ -130,6 +179,7 @@ const SignIn = () => {
             size="lg"
             className="mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl hover:shadow-emerald-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
             onClick={handleGoogleSignIn}
+            disabled={isLoading}
           >
             <div className="flex justify-center items-center gap-2">
               <CircleArrowRight />

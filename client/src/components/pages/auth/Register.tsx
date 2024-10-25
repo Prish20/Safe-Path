@@ -15,6 +15,10 @@ import EmailVerificationModal from "@/components/customComponents/EmailVerificat
 import PasswordInput from "@/components/customComponents/PasswordInput";
 import LoadingButton from "@/components/customComponents/LoadingButton";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { registerUser } from '@/user/userThunks';
 
 interface Errors {
   firstName?: string;
@@ -40,20 +44,23 @@ const Register = () => {
   // State for form errors
   const [errors, setErrors] = useState<Errors>({});
 
-  // Loading state
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingVerifyOtp, setIsLoadingVerifyOtp] = useState(false);
-
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // OTP state
   const [otpValue, setOtpValue] = useState("");
 
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading } = useSelector((state: RootState) => state.user);
+
+  // Add a state for acceptPolicy
+
+
+
   // Handler for form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     try {
       // Validate form data using the imported schema
       registerSchema.parse({
@@ -62,26 +69,15 @@ const Register = () => {
         email,
         password,
         confirmPassword,
-
       });
-
-      // Reset errors
+  
       setErrors({});
-
-      // Set isLoading to true to indicate loading state
-      setIsLoading(true);
-
-      // Simulate form submission delay (e.g., API call)
-      // Replace this with your actual API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // If submission is successful
-      console.log("Form submitted successfully");
-
-      // Reset isLoading to false
-      setIsLoading(false);
-
-      // Open the email verification modal
+  
+      const result = await dispatch(
+        registerUser({ firstName, lastName, email, password })
+      ).unwrap();
+  
+      console.log('Form submitted successfully', result);
       setIsModalOpen(true);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -91,10 +87,12 @@ const Register = () => {
           fieldErrors[path] = err.message;
         });
         setErrors(fieldErrors);
+      } else if (typeof error === 'string') {
+        toast.success(error);
       } else {
-        console.error("An error occurred during registration:", error);
+        console.error('An unexpected error occurred during registration:', error);
+        toast.error('An unexpected error occurred. Please try again.');
       }
-      setIsLoading(false);
     }
   };
 
@@ -102,19 +100,16 @@ const Register = () => {
   const handleVerifyOtp = async () => {
     try {
       // To do: Implement OTP verification logic here
-      setIsLoadingVerifyOtp(true);
       console.log("Verifying OTP:", otpValue);
 
       // Simulate OTP verification delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
       console.log("OTP verified successfully");
-      setIsLoadingVerifyOtp(false);
       navigate("/auth/login");
 
       setIsModalOpen(false);
     } catch (error) {
-      setIsLoadingVerifyOtp(false);
       console.error("An error occurred during OTP verification:", error);
     }
   };
@@ -135,7 +130,7 @@ const Register = () => {
         otpValue={otpValue}
         setOtpValue={setOtpValue}
         handleVerifyOtp={handleVerifyOtp}
-        isLoading={isLoadingVerifyOtp}
+        isLoading={isLoading}
       />
 
       {/* Main Content */}

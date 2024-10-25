@@ -121,7 +121,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="relative flex justify-center items-center bg-gradient-to-r from-gray-800 to-gray-900">
+    <div className="relative flex justify-center items-center rounded-xl bg-gradient-to-r from-gray-800 to-gray-900">
       {/* Forgot Password Modal */}
       <ForgotPasswordModal
         isOpen={isForgotPasswordModalOpen}

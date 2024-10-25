@@ -1,9 +1,9 @@
 import FloatingShape from "@/components/common/FloatingShape";
 import Router from "./routes";
-import { AuthProvider } from "@/contexts/AuthContext";
-import AuthGuard from "./components/AuthGuard";
 import { BrowserRouter } from "react-router-dom";
 import ContainerLayout from "./layouts/ContainerLayout";
+import { MediaQueryProvider } from "@/contexts/MediaQueryContext";
+import { Toaster } from "sonner";
 
 const App = () => {
   return (
@@ -29,15 +29,26 @@ const App = () => {
         left="-10%"
         delay={2}
       />
-      <BrowserRouter>
-        <ContainerLayout>
-          <AuthProvider>
-            <AuthGuard>
-                <Router />
-            </AuthGuard>
-          </AuthProvider>
-        </ContainerLayout>
-      </BrowserRouter>
+      <MediaQueryProvider>
+        <BrowserRouter>
+          <ContainerLayout>
+            <Router />
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+              toastOptions={{
+                style: {
+                  background: '#2d3748',
+                  color: '#ffffff',
+                  border: '1px solid #4a5568',
+                },
+                className: 'my-custom-toast',
+              }}
+            />
+          </ContainerLayout>
+        </BrowserRouter>
+      </MediaQueryProvider>
     </div>
   );
 };

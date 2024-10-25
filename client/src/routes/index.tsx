@@ -25,7 +25,7 @@ const DASHBOARD_PATH = {
 
 // Root Redirect Handler
 const RootRedirect = () => {
-  const isAuthenticated = false; // Replace with real auth check
+  const isAuthenticated = false;
   return isAuthenticated ? (
     <Navigate to={DASHBOARD_PATH.home} replace />
   ) : (

@@ -101,6 +101,7 @@ const signup = async (req, res)=>{
             res.status(400).json({
                 error: "All fields are required"
             });
+            return;
         }
         const userExist = await _usermodel.User.findOne({
             email
@@ -109,6 +110,7 @@ const signup = async (req, res)=>{
             res.status(400).json({
                 error: "User already exists"
             });
+            return;
         }
         const hashedPassword = await _bcryptjs.default.hash(password, 10);
         const verificationToken = (0, _generateVerificationToken.generateVerificationToken)();

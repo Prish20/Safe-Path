@@ -1,14 +1,12 @@
 // src/libs/validationSchemas.ts
 import { z } from "zod";
 
+// Existing registerSchema
 export const registerSchema = z
   .object({
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
-    email: z
-      .string()
-      .min(1, "Email is required")
-      .email("Please provide a valid email"),
+    email: z.string().min(1, "Email is required").email("Email is not valid"),
     password: z.string().min(1, "Password is required"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
@@ -17,5 +15,11 @@ export const registerSchema = z
     path: ["confirmPassword"],
   });
 
-// Optional: Export the inferred TypeScript type for form data
-export type RegisterFormData = z.infer<typeof registerSchema>;
+// New signinSchema
+export const signinSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Email is not valid"),
+  password: z.string().min(1, "Password is required"),
+});
+
+// Optional: Export types
+export type SignInFormData = z.infer<typeof signinSchema>;

@@ -2,7 +2,7 @@
 import React from "react";
 import Modal from "react-modal";
 import { Button } from "@/components/ui/button";
-import { Loader } from "lucide-react"; // Import loader icon
+import { Loader } from "lucide-react";
 import {
   InputOTP,
   InputOTPGroup,
@@ -16,7 +16,7 @@ interface EmailVerificationModalProps {
   otpValue: string;
   setOtpValue: (value: string) => void;
   handleVerifyOtp: () => void;
-  isLoading: boolean; // New prop for loading state
+  isLoading: boolean;
 }
 
 const customModalStyles = {
@@ -27,9 +27,9 @@ const customModalStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    backgroundColor: "#1f2937", // bg-gray-900
+    backgroundColor: "#1f2937",
     border: "none",
-    borderRadius: "0.75rem", // rounded-xl
+    borderRadius: "0.75rem",
     padding: "2rem",
     maxWidth: "500px",
     width: "90%",
@@ -37,7 +37,7 @@ const customModalStyles = {
   },
   overlay: {
     backgroundColor: "rgba(0, 0, 0, 0.75)",
-    backdropFilter: "blur(20px)",
+    backdropFilter: "blur(100px)",
     zIndex: 1000,
   },
 };

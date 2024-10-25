@@ -14,24 +14,23 @@ interface ForgotPasswordModalProps {
 
 const customModalStyles = {
   content: {
-    position: "relative",
-    padding: "1.5rem",
-    backgroundColor: "#1f2937", // bg-gray-900
-    borderRadius: "0.75rem", // rounded-xl
-    maxWidth: "28rem", // max-w-md
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#1f2937",
+    border: "none",
+    borderRadius: "0.75rem",
+    padding: "2rem",
+    maxWidth: "500px",
     width: "90%",
-    margin: "0 auto",
-    overflow: "hidden",
-    outline: "none",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
   },
   overlay: {
-    position: "fixed",
-    inset: 0,
     backgroundColor: "rgba(0, 0, 0, 0.75)",
-    backdropFilter: "blur(20px)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    backdropFilter: "blur(100px)",
     zIndex: 1000,
   },
 };

@@ -128,7 +128,8 @@ const signup = async (req, res)=>{
         res.status(201).json({
             message: "User created successfully",
             user: _object_spread_props(_object_spread({}, user.toObject()), {
-                password: undefined
+                password: undefined,
+                verificationToken: undefined
             })
         });
     } catch (error) {
@@ -159,7 +160,7 @@ const verifyEmail = async (req, res)=>{
         await (0, _email.sendWelcomeEmail)(user.email, user.firstName);
         res.status(200).json({
             success: true,
-            message: "Email verified successfully",
+            message: "Account verified successfully",
             user: _object_spread_props(_object_spread({}, user.toObject()), {
                 password: undefined
             })

@@ -48,6 +48,7 @@ export const signup: RequestHandler = async (req, res): Promise<void> => {
       user: {
         ...user.toObject(),
         password: undefined,
+        verificationToken: undefined,
       },
     });
   } catch (error) {
@@ -73,7 +74,7 @@ export const verifyEmail: RequestHandler = async (req, res): Promise<void> => {
     await sendWelcomeEmail(user.email, user.firstName);
     res.status(200).json({
       success: true,
-      message: "Email verified successfully",
+      message: "Account verified successfully",
       user: {
         ...user.toObject(),
         password: undefined,

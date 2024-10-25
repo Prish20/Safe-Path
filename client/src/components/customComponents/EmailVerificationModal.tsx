@@ -17,6 +17,7 @@ interface EmailVerificationModalProps {
   setOtpValue: (value: string) => void;
   handleVerifyOtp: () => void;
   isLoading: boolean;
+  errorMessage: string | null;
 }
 
 const customModalStyles = {
@@ -52,6 +53,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
   setOtpValue,
   handleVerifyOtp,
   isLoading,
+  errorMessage, // Accept error message prop
 }) => {
   return (
     <Modal
@@ -62,7 +64,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     >
       <div className="p-6">
         <div className="mb-6">
-          <h2 className="text-2xl text-nowrap font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 mb-4">
+          <h2 className="text-2xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 mb-4">
             Verify Your Account
           </h2>
           <p className="text-gray-300 text-center mb-6">
@@ -70,7 +72,14 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
             <span className="font-medium">{email}</span>.
           </p>
         </div>
+        {/* Render error message above the OTP input */}
+        {errorMessage && (
+          <div className="text-red-500 text-center mb-4 font-medium">
+            {errorMessage}
+          </div>
+        )}
         <div className="flex flex-col items-center justify-center">
+          {/* OTP Input and Verify Button */}
           <InputOTP
             value={otpValue}
             onChange={setOtpValue}
@@ -83,11 +92,6 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
                   key={index}
                   index={index}
                   className="bg-gray-800 text-white border border-gray-600 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 ease-in-out p-2 text-center text-2xl font-bold tracking-widest w-8 h- md:w-12 md:h-12 mb-4"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
                 />
               ))}
             </InputOTPGroup>
@@ -116,7 +120,6 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
           Didn't receive the code?{" "}
           <button
             onClick={() => {
-              // Implement resend OTP logic here
               console.log("Resend OTP clicked");
             }}
             className="text-emerald-500 hover:underline"

@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { registerUser } from '@/user/userThunks';
+import { verifyOtp } from '@/user/userThunks';
 
 interface Errors {
   firstName?: string;
@@ -52,6 +53,8 @@ const Register = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading } = useSelector((state: RootState) => state.user);
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Add a state for acceptPolicy
 
@@ -88,7 +91,8 @@ const Register = () => {
         });
         setErrors(fieldErrors);
       } else if (typeof error === 'string') {
-        toast.success(error);
+        console.log('error', error);
+        toast.error(error);
       } else {
         console.error('An unexpected error occurred during registration:', error);
         toast.error('An unexpected error occurred. Please try again.');
@@ -99,18 +103,14 @@ const Register = () => {
   // Handler for verifying OTP
   const handleVerifyOtp = async () => {
     try {
-      // To do: Implement OTP verification logic here
-      console.log("Verifying OTP:", otpValue);
-
-      // Simulate OTP verification delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      console.log("OTP verified successfully");
+      await dispatch(verifyOtp({ email, otp: otpValue })).unwrap();
+      toast.success("Account verified successfully");
       navigate("/auth/login");
-
       setIsModalOpen(false);
+      setErrorMessage(null);
     } catch (error) {
-      console.error("An error occurred during OTP verification:", error);
+      console.error('message:', error);
+      setErrorMessage(error as string);
     }
   };
 
@@ -131,6 +131,7 @@ const Register = () => {
         setOtpValue={setOtpValue}
         handleVerifyOtp={handleVerifyOtp}
         isLoading={isLoading}
+        errorMessage={errorMessage}
       />
 
       {/* Main Content */}

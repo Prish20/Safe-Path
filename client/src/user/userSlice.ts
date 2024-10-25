@@ -6,6 +6,7 @@ export interface UserState {
   isAuthenticated: boolean;
   error: null | object | string;
   isLoading: boolean;
+  isVerified: boolean;
 }
 
 const initialState: UserState = {
@@ -13,6 +14,7 @@ const initialState: UserState = {
   isAuthenticated: false,
   error: null,
   isLoading: false,
+  isVerified: false,
 };
 
 const userSlice = createSlice({
@@ -63,6 +65,19 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
       state.isLoading = false;
       state.error = null;
+    },
+    verifyOtpStart: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    verifyOtpSuccess: (state) => {
+      state.isLoading = false;
+      state.isVerified = true;
+      state.error = null;
+    },
+    verifyOtpFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
     },
   },
 });

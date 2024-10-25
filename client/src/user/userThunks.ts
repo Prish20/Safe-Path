@@ -1,8 +1,6 @@
 // userThunks.ts
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosForApiCall } from '@/lib/axios';
 import { userActions } from './userSlice';
-import { AxiosError } from 'axios';
 
 export const registerUser = createAsyncThunk(
   'user/register',
@@ -17,18 +15,61 @@ export const registerUser = createAsyncThunk(
   ) => {
     try {
       dispatch(userActions.signUpStart());
-      const response = await axiosForApiCall.post('/auth/signup', userData);
-      dispatch(userActions.signUpSuccess());
-      return response.data;
-    } catch (error: unknown) {
-      let errorMessage = 'User already exists';
-      if (error instanceof AxiosError) {
-        errorMessage = error.response?.data?.error || error.message || errorMessage;
-        
-        dispatch(userActions.signUpFailure(errorMessage));
-      } else {
-        dispatch(userActions.signUpFailure(errorMessage));
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to register user');
       }
+
+      const data = await response.json();
+      dispatch(userActions.signUpSuccess());
+      return data;
+    } catch (error) {
+      let errorMessage = 'An unexpected error occurred';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      dispatch(userActions.signUpFailure(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const verifyOtp = createAsyncThunk(
+  'user/verifyOtp',
+  async ({ email, otp }: { email: string; otp: string }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(userActions.verifyOtpStart());
+      const response = await fetch('/api/auth/verify-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, code: otp }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to verify OTP');
+      }
+
+      const data = await response.json();
+      dispatch(userActions.verifyOtpSuccess());
+      dispatch(userActions.signInSuccess(data.user));
+      return data;
+    } catch (error) {
+      let errorMessage = 'An unexpected error occurred';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      dispatch(userActions.verifyOtpFailure(errorMessage));
       return rejectWithValue(errorMessage);
     }
   }

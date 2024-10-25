@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import { signinSchema } from "@/lib/validationSchema";
+import ForgotPasswordModal from "@/components/customComponents/ForgotPasswordModal";
 
 interface Errors {
   email?: string;
@@ -31,6 +32,10 @@ const SignIn = () => {
 
   // State for form errors
   const [errors, setErrors] = useState<Errors>({});
+
+  // State for Forgot Password Modal
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
+  const [isLoadingReset, setIsLoadingReset] = useState(false);
 
   // Handler for form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -84,13 +89,54 @@ const SignIn = () => {
     console.log("Google Sign-In clicked");
   };
 
+  // Handler for Password Reset
+  const handlePasswordReset = async (email: string) => {
+    try {
+      setIsLoadingReset(true);
+
+      // Implement password reset logic here
+      console.log("Password reset requested for:", email);
+
+      // Simulate password reset delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // If password reset is successful
+      console.log("Password reset instructions sent to:", email);
+
+      // Close the modal
+      setIsForgotPasswordModalOpen(false);
+
+      // Reset loading state
+      setIsLoadingReset(false);
+
+      // Optionally, show a success message
+    } catch (error) {
+      console.error("An error occurred during password reset:", error);
+
+      // Reset loading state
+      setIsLoadingReset(false);
+
+      // Optionally, show an error message
+    }
+  };
+
   return (
-    <div className="flex justify-center items-center rounded-xl bg-gradient-to-r from-gray-800 to-gray-900">
+    <div className="relative flex justify-center items-center bg-gradient-to-r from-gray-800 to-gray-900">
+      {/* Forgot Password Modal */}
+      <ForgotPasswordModal
+        isOpen={isForgotPasswordModalOpen}
+        onRequestClose={() => setIsForgotPasswordModalOpen(false)}
+        handlePasswordReset={handlePasswordReset}
+        isLoading={isLoadingReset}
+      />
+
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: isForgotPasswordModalOpen ? 0.5 : 0, y: 20 }}
+        animate={{ opacity: isForgotPasswordModalOpen ? 0.5 : 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-md w-full bg-gray-900 bg-opacity-70 rounded-xl shadow-2xl overflow-hidden"
+        className={`max-w-md w-full bg-gray-900 bg-opacity-70 rounded-xl shadow-2xl overflow-hidden ${
+          isForgotPasswordModalOpen ? "pointer-events-none" : ""
+        }`}
       >
         <div className="p-10">
           <h2 className="text-3xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 mb-4">
@@ -107,7 +153,7 @@ const SignIn = () => {
                 className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading}
+                disabled={isLoading || isForgotPasswordModalOpen}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -124,14 +170,14 @@ const SignIn = () => {
                 className="bg-gray-800 border-none rounded-md focus:ring-emerald-500 w-full"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
+                disabled={isLoading || isForgotPasswordModalOpen}
               />
               <button
                 type="button"
                 aria-label="Toggle password visibility"
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading}
+                disabled={isLoading || isForgotPasswordModalOpen}
               >
                 {showPassword ? (
                   <EyeOff className="w-4 h-4" />
@@ -146,21 +192,25 @@ const SignIn = () => {
 
             {/* Forgot Password Link */}
             <div className="mt-2 text-left">
-              <Link
-                to="/auth/forgot-password"
+              <button
+                type="button"
+                onClick={() => setIsForgotPasswordModalOpen(true)}
                 className="text-emerald-500 hover:underline text-sm"
+                disabled={isLoading || isForgotPasswordModalOpen}
               >
                 Forgot Password?
-              </Link>
+              </button>
             </div>
 
             <Button
               size="lg"
               type="submit"
               className={`mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl transition-all duration-300 ease-in-out transform ${
-                !isLoading ? "hover:shadow-emerald-600 hover:-translate-y-1" : ""
+                !isLoading
+                  ? "hover:shadow-emerald-600 hover:-translate-y-1"
+                  : ""
               }`}
-              disabled={isLoading}
+              disabled={isLoading || isForgotPasswordModalOpen}
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
@@ -179,7 +229,7 @@ const SignIn = () => {
             size="lg"
             className="mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl hover:shadow-emerald-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
             onClick={handleGoogleSignIn}
-            disabled={isLoading}
+            disabled={isLoading || isForgotPasswordModalOpen}
           >
             <div className="flex justify-center items-center gap-2">
               <CircleArrowRight />

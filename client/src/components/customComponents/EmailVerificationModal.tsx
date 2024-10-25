@@ -33,16 +33,16 @@ const customModalStyles = {
     padding: "2rem",
     maxWidth: "500px",
     width: "90%",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)", // Add shadow for better focus
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
   },
   overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.75)", // Dark overlay
-    backdropFilter: "blur(5px)", // Blur effect
-    zIndex: 1000, // Ensure overlay is above other elements
+    backgroundColor: "rgba(0, 0, 0, 0.75)",
+    backdropFilter: "blur(20px)",
+    zIndex: 1000,
   },
 };
 
-Modal.setAppElement("#root"); // Ensure this is called once in your app
+Modal.setAppElement("#root");
 
 const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
   isOpen,

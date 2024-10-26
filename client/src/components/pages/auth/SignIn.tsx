@@ -11,10 +11,14 @@ import {
   Loader,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { signinSchema } from "@/lib/validationSchema";
 import ForgotPasswordModal from "@/components/customComponents/ForgotPasswordModal";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { signInUser } from "@/user/userThunks";
+import { toast } from "sonner";
 
 interface Errors {
   email?: string;
@@ -29,6 +33,7 @@ const SignIn = () => {
 
   // State for password visibility toggle
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   // State for form errors
   const [errors, setErrors] = useState<Errors>({});
@@ -36,35 +41,25 @@ const SignIn = () => {
   // State for Forgot Password Modal
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
   const [isLoadingReset, setIsLoadingReset] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
 
   // Handler for form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
-      // Validate form data using the imported schema
       signinSchema.parse({
         email,
         password,
       });
-
-      // Reset errors
       setErrors({});
-
-      // Set isLoading to true to indicate loading state
       setIsLoading(true);
-
-      // Simulate form submission delay (e.g., API call)
-      // Replace this with your actual API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // If submission is successful
-      console.log("Sign-in form submitted successfully");
-
-      // Reset isLoading to false
+      const result = await dispatch(
+        signInUser({ email, password })
+      ).unwrap();
+      console.log("Sign-in form submitted successfully", result);
       setIsLoading(false);
-
-      // Optionally, redirect the user to another page
+      navigate("/dashboard");
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Errors = {};
@@ -74,7 +69,7 @@ const SignIn = () => {
         });
         setErrors(fieldErrors);
       } else {
-        // Handle other types of errors (e.g., network errors)
+        toast.error(error as string);
         console.error("An error occurred during sign-in:", error);
       }
 

@@ -74,3 +74,38 @@ export const verifyOtp = createAsyncThunk(
     }
   }
 );
+
+export const signInUser = createAsyncThunk(
+  'user/signIn',
+  async (
+    userData: { email: string; password: string },
+    { dispatch, rejectWithValue }
+  ) => {
+    try {
+      dispatch(userActions.signInStart());
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to sign in');
+      }
+
+      const data = await response.json();
+      dispatch(userActions.signInSuccess(data.user));
+      return data;
+    } catch (error) {
+      let errorMessage = 'An unexpected error occurred';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      dispatch(userActions.signInFailure(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
+  }
+);

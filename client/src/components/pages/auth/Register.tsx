@@ -2,11 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { CustomInput } from "@/components/customComponents/customInput";
-import {
-  CircleArrowRight,
-  Mail,
-  UserRound,
-} from "lucide-react";
+import { CircleArrowRight, Mail, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "@/components/common/PassStrength";
 import { z } from "zod";
@@ -16,10 +12,10 @@ import PasswordInput from "@/components/customComponents/PasswordInput";
 import LoadingButton from "@/components/customComponents/LoadingButton";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@/redux/store';
-import { registerUser } from '@/user/userThunks';
-import { verifyOtp } from '@/user/userThunks';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { registerUser } from "@/user/userThunks";
+import { verifyOtp } from "@/user/userThunks";
 
 interface Errors {
   firstName?: string;
@@ -58,12 +54,10 @@ const Register = () => {
 
   // Add a state for acceptPolicy
 
-
-
   // Handler for form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     try {
       // Validate form data using the imported schema
       registerSchema.parse({
@@ -73,14 +67,14 @@ const Register = () => {
         password,
         confirmPassword,
       });
-  
+
       setErrors({});
-  
+
       const result = await dispatch(
         registerUser({ firstName, lastName, email, password })
       ).unwrap();
-  
-      console.log('Form submitted successfully', result);
+
+      console.log("Form submitted successfully", result);
       setIsModalOpen(true);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -90,12 +84,15 @@ const Register = () => {
           fieldErrors[path] = err.message;
         });
         setErrors(fieldErrors);
-      } else if (typeof error === 'string') {
-        console.log('error', error);
+      } else if (typeof error === "string") {
+        console.log("error", error);
         toast.error(error);
       } else {
-        console.error('An unexpected error occurred during registration:', error);
-        toast.error('An unexpected error occurred. Please try again.');
+        console.error(
+          "An unexpected error occurred during registration:",
+          error
+        );
+        toast.error("An unexpected error occurred. Please try again.");
       }
     }
   };
@@ -109,7 +106,7 @@ const Register = () => {
       setIsModalOpen(false);
       setErrorMessage(null);
     } catch (error) {
-      console.error('message:', error);
+      console.error("message:", error);
       setErrorMessage(error as string);
     }
   };
@@ -161,7 +158,9 @@ const Register = () => {
                   disabled={isLoading || isModalOpen}
                 />
                 {errors.firstName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.firstName}
+                  </p>
                 )}
               </div>
               <div className="w-full">
@@ -200,7 +199,9 @@ const Register = () => {
             <PasswordInput
               label="Password"
               value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               showPassword={showPassword}
               toggleShowPassword={() => setShowPassword(!showPassword)}
               error={errors.password}
@@ -210,9 +211,13 @@ const Register = () => {
             <PasswordInput
               label="Confirm Password"
               value={confirmPassword}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setConfirmPassword(e.target.value)
+              }
               showPassword={showConfirmPassword}
-              toggleShowPassword={() => setShowConfirmPassword(!showConfirmPassword)}
+              toggleShowPassword={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
               error={errors.confirmPassword}
               disabled={isLoading || isModalOpen}
             />

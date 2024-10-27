@@ -44,7 +44,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   isLoading,
 }) => {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +61,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       await handlePasswordReset(email);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
+      setError("")
     }
   };
 

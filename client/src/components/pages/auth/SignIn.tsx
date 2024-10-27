@@ -17,8 +17,10 @@ import { signinSchema } from "@/lib/validationSchema";
 import ForgotPasswordModal from "@/components/customComponents/ForgotPasswordModal";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { signInUser } from "@/user/userThunks";
+import { signInUser, verifyOtp, requestPasswordReset } from "@/user/userThunks";
 import { toast } from "sonner";
+import EmailVerificationModal from "@/components/customComponents/EmailVerificationModal";
+import { DASHBOARD_PATH } from "@/routes/paths";
 
 interface Errors {
   email?: string;
@@ -39,10 +41,22 @@ const SignIn = () => {
   const [errors, setErrors] = useState<Errors>({});
 
   // State for Forgot Password Modal
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false);
   const [isLoadingReset, setIsLoadingReset] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
+  // State for Email Verification Modal
+  const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] =
+    useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
+  const [isLoadingVerification, setIsLoadingVerification] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(
+    null
+  );
+
+  // Add this new state
+  const [otpValue, setOtpValue] = useState("");
 
   // Handler for form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -54,12 +68,19 @@ const SignIn = () => {
       });
       setErrors({});
       setIsLoading(true);
-      const result = await dispatch(
-        signInUser({ email, password })
-      ).unwrap();
-      console.log("Sign-in form submitted successfully", result);
-      setIsLoading(false);
-      navigate("/dashboard");
+      const result = await dispatch(signInUser({ email, password })).unwrap();
+
+      if (!result.isVerified) {
+        setUnverifiedEmail(email);
+        setIsEmailVerificationModalOpen(true);
+      } else {
+        try {
+          navigate(DASHBOARD_PATH.home);
+          console.log("Navigation completed");
+        } catch (navError) {
+          console.error("Navigation error:", navError);
+        }
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Errors = {};
@@ -73,9 +94,15 @@ const SignIn = () => {
         console.error("An error occurred during sign-in:", error);
       }
 
-      // Reset isLoading to false in case of error
+      setIsLoading(false);
+    } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSuccessfulVerification = () => {
+    setIsEmailVerificationModalOpen(false);
+    navigate(DASHBOARD_PATH.home);
   };
 
   // Handler for Google Sign-In
@@ -84,34 +111,35 @@ const SignIn = () => {
     console.log("Google Sign-In clicked");
   };
 
-  // Handler for Password Reset
+  // Update the handlePasswordReset function
   const handlePasswordReset = async (email: string) => {
     try {
       setIsLoadingReset(true);
-
-      // Implement password reset logic here
-      console.log("Password reset requested for:", email);
-
-      // Simulate password reset delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // If password reset is successful
-      console.log("Password reset instructions sent to:", email);
-
-      // Close the modal
+      await dispatch(requestPasswordReset(email)).unwrap();
+      toast.success("Password reset instructions sent to your email");
       setIsForgotPasswordModalOpen(false);
-
-      // Reset loading state
-      setIsLoadingReset(false);
-
-      // Optionally, show a success message
     } catch (error) {
+      toast.error(error as string);
       console.error("An error occurred during password reset:", error);
-
-      // Reset loading state
+    } finally {
       setIsLoadingReset(false);
+    }
+  };
 
-      // Optionally, show an error message
+  // Update the handleEmailVerification function
+  const handleEmailVerification = async () => {
+    setIsLoadingVerification(true);
+    setVerificationError(null);
+    try {
+      await dispatch(
+        verifyOtp({ email: unverifiedEmail, otp: otpValue })
+      ).unwrap();
+      handleSuccessfulVerification();
+    } catch (error) {
+      setVerificationError(error as string);
+      console.error("An error occurred during email verification:", error);
+    } finally {
+      setIsLoadingVerification(false);
     }
   };
 
@@ -123,6 +151,18 @@ const SignIn = () => {
         onRequestClose={() => setIsForgotPasswordModalOpen(false)}
         handlePasswordReset={handlePasswordReset}
         isLoading={isLoadingReset}
+      />
+
+      {/* Email Verification Modal */}
+      <EmailVerificationModal
+        isOpen={isEmailVerificationModalOpen}
+        onRequestClose={() => setIsEmailVerificationModalOpen(false)}
+        email={unverifiedEmail}
+        otpValue={otpValue}
+        setOtpValue={setOtpValue}
+        handleVerifyOtp={handleEmailVerification}
+        isLoading={isLoadingVerification}
+        errorMessage={verificationError}
       />
 
       <motion.div

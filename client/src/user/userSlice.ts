@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { User } from '@/types/user';
+import { createSlice } from "@reduxjs/toolkit";
+import { User } from "@/types/user";
 
 export interface UserState {
   currentUser: null | User;
@@ -7,6 +7,7 @@ export interface UserState {
   error: null | object | string;
   isLoading: boolean;
   isVerified: boolean;
+  isResettingPassword: boolean;
 }
 
 const initialState: UserState = {
@@ -15,10 +16,11 @@ const initialState: UserState = {
   error: null,
   isLoading: false,
   isVerified: false,
+  isResettingPassword: false,
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     signInStart: (state) => {
@@ -29,10 +31,12 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
       state.isAuthenticated = true;
       state.isLoading = false;
+      state.isVerified = true;
       state.error = null;
     },
     signInFailure: (state, action) => {
       state.isLoading = false;
+      state.isVerified = false;
       state.error = action.payload;
     },
     signUpStart: (state) => {
@@ -77,6 +81,30 @@ const userSlice = createSlice({
     },
     verifyOtpFailure: (state, action) => {
       state.isLoading = false;
+      state.error = action.payload;
+    },
+    requestPasswordResetStart: (state) => {
+      state.isResettingPassword = true;
+      state.error = null;
+    },
+    requestPasswordResetSuccess: (state) => {
+      state.isResettingPassword = false;
+      state.error = null;
+    },
+    requestPasswordResetFailure: (state, action) => {
+      state.isResettingPassword = false;
+      state.error = action.payload;
+    },
+    resetPasswordStart: (state) => {
+      state.isResettingPassword = true;
+      state.error = null;
+    },
+    resetPasswordSuccess: (state) => {
+      state.isResettingPassword = false;
+      state.error = null;
+    },
+    resetPasswordFailure: (state, action) => {
+      state.isResettingPassword = false;
       state.error = action.payload;
     },
   },

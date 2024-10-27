@@ -1,31 +1,27 @@
-import { lazy, ComponentType, Suspense } from 'react';
-import { Navigate, useRoutes, RouteObject } from 'react-router-dom';
+import { useAppSelector } from "@/hooks/useRedux";
+import { lazy, ComponentType, Suspense } from "react";
+import { Navigate, useRoutes, RouteObject } from "react-router-dom";
+import AuthGuard from "@/components/AuthGuard";
+import { AUTH_PATH, DASHBOARD_PATH, RESET_PASSWORD_PATH } from "./paths";
 
 // Layouts (lazy loaded)
-const DashboardLayout = lazy(() => import('@/layouts/DashboardLayout'));
+const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
 
 // Pages (lazy loaded)
-const SignIn = lazy(() => import('@/components/pages/auth/SignIn'));
-const SignUp = lazy(() => import('@/components/pages/auth/Register'));
-const DashboardHome = lazy(() => import('@/components/pages/dashboard/Home'));
-const NotFound = lazy(() => import('@/components/pages/NotFound'));
+const SignIn = lazy(() => import("@/components/pages/auth/SignIn"));
+const SignUp = lazy(() => import("@/components/pages/auth/Register"));
+const ResetPassword = lazy(
+  () => import("@/components/pages/auth/ResetPassword")
+);
+const DashboardHome = lazy(() => import("@/components/pages/dashboard/Home"));
+const NotFound = lazy(() => import("@/components/pages/NotFound"));
 
 // Components
 // import Loadable from '@/components/Loadable';
 
-// Route Paths
-const AUTH_PATH = {
-  login: '/auth/login',
-  register: '/auth/register',
-};
-
-const DASHBOARD_PATH = {
-  home: '/dashboard/home',
-};
-
 // Root Redirect Handler
 const RootRedirect = () => {
-  const isAuthenticated = false;
+  const { isAuthenticated } = useAppSelector((state) => state.user);
   return isAuthenticated ? (
     <Navigate to={DASHBOARD_PATH.home} replace />
   ) : (
@@ -34,7 +30,9 @@ const RootRedirect = () => {
 };
 
 // Lazy Loadable Wrapper
-const withLoadable = (Component: React.LazyExoticComponent<ComponentType<object>>) => (
+const withLoadable = (
+  Component: React.LazyExoticComponent<ComponentType<object>>
+) => (
   <Suspense fallback={<div>Loading...</div>}>
     <Component />
   </Suspense>
@@ -43,26 +41,33 @@ const withLoadable = (Component: React.LazyExoticComponent<ComponentType<object>
 // Route Configuration
 const routes: RouteObject[] = [
   {
-    path: '/',
+    path: "/",
     element: <RootRedirect />,
   },
   // Auth routes without AuthLayout
-  { path: 'auth/login', element: withLoadable(SignIn) },
-  { path: 'auth/register', element: withLoadable(SignUp) },
+  { path: AUTH_PATH.login, element: withLoadable(SignIn) },
+  { path: AUTH_PATH.register, element: withLoadable(SignUp) },
   {
-    path: 'dashboard',
-    element: withLoadable(DashboardLayout),
+    path: RESET_PASSWORD_PATH.root,
+    children: [
+      { index: true, element: withLoadable(ResetPassword) },
+      { path: ":token", element: withLoadable(ResetPassword) },
+    ],
+  },
+  {
+    path: DASHBOARD_PATH.root,
+    element: <AuthGuard>{withLoadable(DashboardLayout)}</AuthGuard>,
     children: [
       { index: true, element: <Navigate to={DASHBOARD_PATH.home} replace /> },
-      { path: 'home', element: withLoadable(DashboardHome) },
+      { path: "home", element: withLoadable(DashboardHome) },
       {
-        path: '*',
+        path: "*",
         element: withLoadable(NotFound),
       },
     ],
   },
   {
-    path: '*',
+    path: "*",
     element: withLoadable(NotFound),
   },
 ];

@@ -1,15 +1,14 @@
-import AnimatedLogo from '@/assets/AnimatedLogo';
-import { Suspense } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Suspense } from "react";
+import SuspenseFallback from "./SuspenseFallback";
 
-const Loadable = (Component) => (
-    function (props: {[key: string]: unknown}) {
-
-        return (
-            <Suspense fallback={<AnimatedLogo width={250} height={250} />}>
-                <Component {...props} />
-            </Suspense>
-        )
-    }
-)
+const Loadable = (Component: any) =>
+  function (props: { [key: string]: unknown }) {
+    return (
+      <Suspense fallback={<SuspenseFallback />}>
+        <Component {...props} />
+      </Suspense>
+    );
+  };
 
 export default Loadable;

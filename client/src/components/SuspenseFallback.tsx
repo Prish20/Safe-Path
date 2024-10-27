@@ -1,4 +1,4 @@
-import LoadingComp from './common/LoadingComp';
+import LoadingComp from "./common/LoadingComp";
 
 /**
  * Suspense Fall Back Componenent for

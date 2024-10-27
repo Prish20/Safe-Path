@@ -10,6 +10,7 @@ Object.defineProperty(exports, "default", {
 });
 const _express = /*#__PURE__*/ _interop_require_default(require("express"));
 const _db = /*#__PURE__*/ _interop_require_default(require("./config/db"));
+const _cors = /*#__PURE__*/ _interop_require_default(require("cors"));
 require("dotenv/config");
 const _cookieparser = /*#__PURE__*/ _interop_require_default(require("cookie-parser"));
 const _authroutes = /*#__PURE__*/ _interop_require_default(require("./routes/auth.routes"));
@@ -23,6 +24,12 @@ app.use(_express.default.json({
     limit: '10mb'
 }));
 app.use((0, _cookieparser.default)());
+app.use((0, _cors.default)({
+    origin: [
+        'http://localhost:5173'
+    ],
+    credentials: true
+}));
 app.get('/', (_, res)=>{
     res.send('Root endpoint check ');
 });

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 /**
  * The container that houses the major routes
@@ -12,14 +12,14 @@ type ContainerProp = {
 
 const ContainerLayout: React.FC<ContainerProp> = ({ children }) => {
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden sm:p-10 ">
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden sm:p-10">
       {/* Just vanity element hehe */}
       <div
-        className="absolute flex h-[90%] w-[50%] min-w-[900px] items-center justify-center rounded-[1000px] bg-white bg-opacity-[15%]"
+        className="absolute flex h-[100%] w-[50%] min-w-[900px] items-center justify-center rounded-[1000px]"
         role="presentation"
       >
         <div
-          className="absolute h-[70%] w-[70%] rounded-[1000px] bg-white bg-opacity-[25%]"
+          className="absolute h-[70%] w-[70%] rounded-[1000px]"
           role="presentation"
         ></div>
       </div>

@@ -22,10 +22,12 @@ export const signup: RequestHandler = async (req, res): Promise<void> => {
   try {
     if (!firstName || !lastName || !email || !password) {
       res.status(400).json({ error: "All fields are required" });
+      return;
     }
     const userExist = await User.findOne({ email });
     if (userExist) {
       res.status(400).json({ error: "User already exists" });
+      return;
     }
     const hashedPassword = await bcryptjs.hash(password, 10);
     const verificationToken = generateVerificationToken();
@@ -46,6 +48,7 @@ export const signup: RequestHandler = async (req, res): Promise<void> => {
       user: {
         ...user.toObject(),
         password: undefined,
+        verificationToken: undefined,
       },
     });
   } catch (error) {
@@ -71,7 +74,7 @@ export const verifyEmail: RequestHandler = async (req, res): Promise<void> => {
     await sendWelcomeEmail(user.email, user.firstName);
     res.status(200).json({
       success: true,
-      message: "Email verified successfully",
+      message: "Account verified successfully",
       user: {
         ...user.toObject(),
         password: undefined,

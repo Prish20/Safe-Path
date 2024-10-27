@@ -101,6 +101,7 @@ const signup = async (req, res)=>{
             res.status(400).json({
                 error: "All fields are required"
             });
+            return;
         }
         const userExist = await _usermodel.User.findOne({
             email
@@ -109,6 +110,7 @@ const signup = async (req, res)=>{
             res.status(400).json({
                 error: "User already exists"
             });
+            return;
         }
         const hashedPassword = await _bcryptjs.default.hash(password, 10);
         const verificationToken = (0, _generateVerificationToken.generateVerificationToken)();
@@ -126,7 +128,8 @@ const signup = async (req, res)=>{
         res.status(201).json({
             message: "User created successfully",
             user: _object_spread_props(_object_spread({}, user.toObject()), {
-                password: undefined
+                password: undefined,
+                verificationToken: undefined
             })
         });
     } catch (error) {
@@ -157,7 +160,7 @@ const verifyEmail = async (req, res)=>{
         await (0, _email.sendWelcomeEmail)(user.email, user.firstName);
         res.status(200).json({
             success: true,
-            message: "Email verified successfully",
+            message: "Account verified successfully",
             user: _object_spread_props(_object_spread({}, user.toObject()), {
                 password: undefined
             })

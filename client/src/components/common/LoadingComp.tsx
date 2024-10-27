@@ -1,18 +1,18 @@
-import { LoaderCircle } from 'lucide-react';
-import React from 'react';
+import { LoaderCircle } from "lucide-react";
+import React from "react";
 
 type LoadingType = {
   className?: string;
   iconHeight?: number;
   message?: string;
-  iconType?: 'box' | 'ring';
+  iconType?: "box" | "ring";
   iconColor?: string;
 };
 
 const LoadingComp: React.FC<LoadingType> = ({
-  className = 'h-[50%]',
+  className = "h-[50%]",
   iconHeight = 40,
-  iconColor = 'green',
+  iconColor = "green",
   iconType,
   message,
 }) => {
@@ -20,10 +20,10 @@ const LoadingComp: React.FC<LoadingType> = ({
     <div className={`flex flex-col justify-center text-center ${className}`}>
       <LoaderCircle
         className={`animate-spin mx-auto rounded-md my-3  ${
-          iconType === 'box' ? `bg-primary-${iconColor}` : ''
+          iconType === "box" ? `bg-primary-${iconColor}` : ""
         }`}
         size={iconHeight}
-        color={iconType === 'box' ? '' : iconColor}
+        color={iconType === "box" ? "" : iconColor}
       />
       <p className="animate-pulse">{message}</p>
     </div>

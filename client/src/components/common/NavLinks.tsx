@@ -39,7 +39,7 @@ const NavLink = ({
       className={cn(
         'flex items-center rounded-lg text-sm transition-all hover:bg-accent',
         isActive
-          ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+          ? 'text-primary-foreground hover:bg-primary/90'
           : 'text-muted-foreground',
         collapsed ? 'justify-center px-2 py-2' : 'gap-3 px-3 py-2',
         className

@@ -3,7 +3,7 @@ import LogoHeader from "@/components/common/LogoHeader";
 import { useLocation } from "react-router-dom";
 import NavLink from "@/components/common/NavLinks";
 import { navigationLinks } from "../pages/constants";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, User, LogOut } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
@@ -62,18 +62,43 @@ const NavigationDesktop = () => {
           aria-label="Sidebar Navigation"
           className="flex-1 overflow-hidden"
         >
-          <TooltipProvider delayDuration={0}>
+          <TooltipProvider>
             <ul className="flex flex-col gap-2">
               {navigationLinks.map((link, index) => (
                 <li key={index}>
-                  <NavLink
-                    route={link.route}
-                    pathname={pathname}
-                    label={link.label}
-                    Icon={link.icon}
-                    className="flex items-center gap-4 p-2 hover:bg-green-700 rounded-md flex-shrink-0"
-                    collapsed={isCollapsed}
-                  />
+                  {isCollapsed ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <NavLink
+                            route={link.route}
+                            pathname={pathname}
+                            label={link.label}
+                            Icon={link.icon}
+                            className="flex items-center gap-4 p-2 hover:bg-green-700 rounded-md flex-shrink-0"
+                            collapsed={isCollapsed}
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent 
+                        side="right" 
+                        align="start"
+                        sideOffset={16}
+                        className="bg-gray-900 font-semibold text-white p-2 rounded-md"
+                      >
+                        {link.label}
+                      </TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <NavLink
+                      route={link.route}
+                      pathname={pathname}
+                      label={link.label}
+                      Icon={link.icon}
+                      className="flex items-center gap-4 p-2 hover:bg-green-700 rounded-md flex-shrink-0"
+                      collapsed={isCollapsed}
+                    />
+                  )}
                 </li>
               ))}
             </ul>

@@ -183,3 +183,32 @@ export const resetPassword = createAsyncThunk(
     }
   }
 );
+
+export const handleLogout = createAsyncThunk(
+  "user/logout",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(userActions.signOutStart());
+      const response = await fetch("/api/auth/signout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to sign out");
+      }
+
+      dispatch(userActions.signOutSuccess());
+    } catch (error) {
+      let errorMessage = "An unexpected error occurred";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      dispatch(userActions.signOutFailure(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
+  }
+);

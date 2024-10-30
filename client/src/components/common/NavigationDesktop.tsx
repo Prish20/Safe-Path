@@ -5,7 +5,7 @@ import NavLink from "@/components/common/NavLinks";
 import { navigationLinks } from "../pages/constants";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, User, LogOut } from "lucide-react";
+import { User, LogOut, ChevronsRight, ChevronsLeft } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { handleLogout } from "@/user/userThunks";
@@ -33,25 +33,25 @@ const NavigationDesktop = () => {
     <aside
       aria-label="Main Navigation"
       className={cn(
-        "fixed top-0 left-0 h-full bg-gray-900 bg-opacity-90 hidden md:block text-white overflow-hidden",
+        "h-full bg-gray-900 hidden md:block text-white overflow-hidden",
         "transition-width duration-500 ease-in-out",
         isCollapsed ? "w-16" : "w-72"
       )}
       style={{ transitionProperty: "width" }}
     >
-      <div className="flex h-full flex-col justify-between border-r px-2 py-4">
+      <div className="flex h-full flex-col justify-between px-2 py-4">
         {/* Logo and Toggle */}
         <div className="flex items-center justify-between mb-6 flex-shrink-0">
           {!isCollapsed && <LogoHeader className="text-white flex-shrink-0" />}
           <button
             onClick={handleCollapseToggle}
-            className="rounded-md p-2 hover:bg-green-800 focus:outline-none ring-2 ring-offset-2 ring-offset-green-900 ring-green-500 flex-shrink-0 mr-2 ml-2"
+            className="rounded-md p-2 text-green-500 flex-shrink-0 mr-2 ml-2"
             aria-label="Toggle Navigation"
           >
             {isCollapsed ? (
-              <ChevronRight size={20} />
+              <ChevronsRight size={20} />
             ) : (
-              <ChevronLeft size={20} />
+              <ChevronsLeft size={20} />
             )}
           </button>
         </div>
@@ -75,7 +75,7 @@ const NavigationDesktop = () => {
                             pathname={pathname}
                             label={link.label}
                             Icon={link.icon}
-                            className="flex items-center gap-4 p-2 hover:bg-green-700 rounded-md flex-shrink-0"
+                            className="flex items-center gap-4 p-2 hover:bg-green-700 rounded-md flex-shrink-0 text-green-500"
                             collapsed={isCollapsed}
                           />
                         </div>
@@ -83,8 +83,8 @@ const NavigationDesktop = () => {
                       <TooltipContent 
                         side="right" 
                         align="start"
-                        sideOffset={16}
-                        className="bg-gray-900 font-semibold text-white p-2 rounded-md"
+                        sideOffset={20}
+                        className="bg-green-500 z-50 font-semibold text-white p-2 rounded-md"
                       >
                         {link.label}
                       </TooltipContent>

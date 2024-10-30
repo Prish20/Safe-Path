@@ -9,10 +9,9 @@ import { useState } from 'react';
 const DashboardLayout = () => {
   const [showMobileNav, setShowMobileNav] = useState(false);
   return (
-    <main className="flex h-screen w-full max-w-[1350px] gap-3 overflow-hidden bg-gray-neutral font-poppins sm:h-[calc(100dvh-80px)] sm:rounded-lg">
+    <main className="flex h-screen w-full max-w-[1350px] gap-0 overflow-hidden bg-gray-neutral font-poppins sm:h-[calc(100dvh-80px)] sm:rounded-lg">
       <NavigationDesktop />
-
-      <section className="w-full overflow-y-auto scrollbar-hide sm:scrollbar-thin">
+      <section className="flex-1 overflow-y-auto scrollbar-hide sm:scrollbar-thin">
         {/* Mobile Header */}
         <div
           className="sm:hidden flex justify-between p-5 sm:pt-8 cursor-pointer"

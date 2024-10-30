@@ -37,16 +37,16 @@ const NavLink = ({
       href={route}
       onClick={handleClick}
       className={cn(
-        'flex items-center rounded-lg text-sm transition-all hover:bg-accent',
+        'flex items-center rounded-lg text-sm transition-all hover:bg-accent flex-shrink-0',
         isActive
-          ? 'text-primary-foreground hover:bg-primary/90'
-          : 'text-muted-foreground',
+          ? 'text-white hover:bg-green-500 bg-emerald-500/20'
+          : 'text-white',
         collapsed ? 'justify-center px-2 py-2' : 'gap-3 px-3 py-2',
         className
       )}
     >
-      <Icon size={20} />
-      {!collapsed && <span>{label}</span>}
+      <Icon size={20} className="text-green-500 flex-shrink-0" />
+      {!collapsed && <span className='flex-shrink-0'>{label}</span>}
     </a>
   );
 };

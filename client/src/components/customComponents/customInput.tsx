@@ -6,11 +6,13 @@ import { InputHTMLAttributes, ReactNode } from "react";
 interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: ReactNode;
   iconPosition?: "left" | "right";
+  iconClassName?: string;
 }
 
 export function CustomInput({
   icon,
   iconPosition = "left",
+  iconClassName,
   className,
   ...props
 }: CustomInputProps) {
@@ -22,7 +24,7 @@ export function CustomInput({
     <div className="relative">
       {icon && (
         <Slot
-          className={`absolute inset-y-0 ${iconWrapperClasses} flex items-center pointer-events-none`}
+          className={`absolute inset-y-0 ${iconWrapperClasses} flex items-center pointer-events-none ${iconClassName}`}
         >
           {icon}
         </Slot>

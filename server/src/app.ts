@@ -5,6 +5,7 @@ import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 
 import authRoutes from './routes/auth.routes';
+import incidentRoutes from './routes/incident.routes';
 
 const app: Application = express();
 
@@ -22,6 +23,7 @@ app.get('/', (_, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/incident", incidentRoutes);
 
 connectDB();
 

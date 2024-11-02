@@ -14,6 +14,7 @@ const _cors = /*#__PURE__*/ _interop_require_default(require("cors"));
 require("dotenv/config");
 const _cookieparser = /*#__PURE__*/ _interop_require_default(require("cookie-parser"));
 const _authroutes = /*#__PURE__*/ _interop_require_default(require("./routes/auth.routes"));
+const _incidentroutes = /*#__PURE__*/ _interop_require_default(require("./routes/incident.routes"));
 function _interop_require_default(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj
@@ -34,5 +35,6 @@ app.get('/', (_, res)=>{
     res.send('Root endpoint check ');
 });
 app.use("/api/auth", _authroutes.default);
+app.use("/api/incident", _incidentroutes.default);
 (0, _db.default)();
 const _default = app;

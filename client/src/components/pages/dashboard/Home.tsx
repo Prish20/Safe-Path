@@ -7,8 +7,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAllIncidents } from "@/user/userThunks";
 import { AppDispatch } from "@/redux/store";
+import { getAllIncidents } from "@/redux/thunks/incidentThunks";
 import {
   Carousel,
   CarouselContent,

@@ -1,14 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllIncidents } from "@/user/userThunks";
-
-interface Incident {
-  type: string;
-  description: string;
-  location: string;
-  images?: string[];
-  status: string;
-  createdAt: string;
-}
+import { getAllIncidents } from "../thunks/incidentThunks";
+import { Incident } from '@/types/incident';
 
 interface IncidentState {
   incidents: Incident[];

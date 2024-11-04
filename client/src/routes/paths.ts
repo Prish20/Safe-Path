@@ -20,4 +20,7 @@ export const RESET_PASSWORD_PATH = {
 export const DASHBOARD_PATH = {
   root: ROOTS_DASHBOARD,
   home: path(ROOTS_DASHBOARD, "/home"),
+  incidentReporting: path(ROOTS_DASHBOARD, "/incident-reporting"),
+  map: path(ROOTS_DASHBOARD, "/map"),
+  communityEngagement: path(ROOTS_DASHBOARD, "/community-engagement"),
 };

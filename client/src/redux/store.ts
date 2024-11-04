@@ -1,12 +1,14 @@
 // store.ts
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers, ThunkAction, Action } from "@reduxjs/toolkit";
 import userReducer from "../user/userSlice";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import persistStore from "redux-persist/es/persistStore";
+import incidentReducer from './slices/incidentSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
+  incidents: incidentReducer,
 });
 
 const persistConfig = {
@@ -29,5 +31,12 @@ export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
 
 export default store;

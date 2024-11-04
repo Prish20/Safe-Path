@@ -14,7 +14,10 @@ const ResetPassword = lazy(
   () => import("@/components/pages/auth/ResetPassword")
 );
 const DashboardHome = lazy(() => import("@/components/pages/dashboard/Home"));
+const IncidentReporting = lazy(() => import("@/components/pages/dashboard/IncidentReporting"));
+const Map = lazy(() => import("@/components/pages/dashboard/MapNavigation"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
+const CommunityEngagement = lazy(() => import("@/components/pages/dashboard/CommunityEngagement"));
 
 // Components
 // import Loadable from '@/components/Loadable';
@@ -60,6 +63,9 @@ const routes: RouteObject[] = [
     children: [
       { index: true, element: <Navigate to={DASHBOARD_PATH.home} replace /> },
       { path: "home", element: withLoadable(DashboardHome) },
+      { path: "incident-reporting", element: withLoadable(IncidentReporting) },
+      { path: "map", element: withLoadable(Map) },
+      { path: "community-engagement", element: withLoadable(CommunityEngagement) },
       {
         path: "*",
         element: withLoadable(NotFound),

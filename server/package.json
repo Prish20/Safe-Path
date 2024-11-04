@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "dist/server.js",
   "scripts": {
-    "build": "swc src -d dist",
-    "build:watch": "swc src -d dist -w",
-    "serve": "nodemon --watch dist dist/server.js",
+    "build": "swc src -d public",
+    "build:watch": "swc src -d public -w",
+    "serve": "nodemon --watch public public/server.js",
     "dev": "concurrently \"npm run build:watch\" \"npm run serve\"",
-    "start": "npm run build && node dist/server.js",
+    "start": "npm run build && node public/server.js",
     "type-check": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

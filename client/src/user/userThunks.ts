@@ -2,7 +2,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { userActions } from "./userSlice";
 
-const API_BASE_URL = 'https://safe-path-frontend.vercel.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const registerUser = createAsyncThunk(
   "user/register",

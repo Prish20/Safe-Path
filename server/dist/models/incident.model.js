@@ -44,6 +44,14 @@ const incidentSchema = new _mongoose.default.Schema({
         ref: 'User',
         required: false
     },
+    coordinates: {
+        _id: false,
+        type: {
+            lat: Number,
+            lng: Number
+        },
+        required: false
+    },
     status: {
         type: String,
         enum: [

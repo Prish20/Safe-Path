@@ -2,9 +2,6 @@ import { defineConfig } from 'vite'
 import path from "path"
 import react from '@vitejs/plugin-react-swc'
 
-const apiURL ="http://localhost:3000";
-
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -12,10 +9,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // The proxy is only needed for local development
   server: {
     proxy: {
       "/api": {
-        target: apiURL,
+        target: "http://localhost:3000",
         secure: false,
       },
     }

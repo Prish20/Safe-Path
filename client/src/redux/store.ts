@@ -4,9 +4,11 @@ import userReducer from "../user/userSlice";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import persistStore from "redux-persist/es/persistStore";
+import incidentReducer from './slices/incidentSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
+  incidents: incidentReducer,
 });
 
 const persistConfig = {

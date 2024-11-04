@@ -17,4 +17,6 @@ function _interop_require_default(obj) {
 }
 const router = _express.default.Router();
 router.post('/report', _incidentcontrollers.reportIncident);
+router.get('/:id', _incidentcontrollers.getIncident);
+router.get('/', _incidentcontrollers.getAllIncidents);
 const _default = router;

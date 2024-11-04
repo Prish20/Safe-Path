@@ -6,8 +6,6 @@ import {
   MessageCircle,
 } from '@/assets/icons';
 
-import { Chat3D } from '@/assets';
-
 export const navigationLinks = [
   {
     label: 'Dashboard',
@@ -34,13 +32,6 @@ export const navigationLinks = [
 
 export const quickShortcuts = [
   {
-    image: Chat3D,
-    title: 'Chat With AI',
-    className: 'bg-primary-green',
-    description: 'Start a conversation to learn about your plants, and more.',
-    route: DASHBOARD_PATH.home,
-  },
-  {
     image: FileText,
     title: 'Report an Incident',
     className: 'bg-primary-green',
@@ -55,7 +46,7 @@ export const quickShortcuts = [
     route: DASHBOARD_PATH.map,
   },
   {
-    image: Chat3D,
+    image: MessageCircle,
     title: 'Community Engagement',
     className: 'bg-primary-green',
     description: 'Engage with the community.',

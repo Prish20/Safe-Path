@@ -47,3 +47,67 @@ export const reportIncident = async (
     });
   }
 };
+
+export const getIncident = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const incident = await Incident.findById(id);
+    
+    if (!incident) {
+      res.status(404).json({
+        success: false,
+        message: 'Incident not found'
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      incident
+    });
+  } catch (error) {
+    const err = error as Error;
+    console.error('Error details:', {
+      name: err.name,
+      message: err.message,
+      stack: err.stack
+    });
+
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching incident',
+      error: err.message
+    });
+  }
+};
+
+export const getAllIncidents = async (
+  _req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const incidents = await Incident.find().sort({ createdAt: -1 });
+    
+    res.status(200).json({
+      success: true,
+      incidents
+    });
+  } catch (error) {
+    const err = error as Error;
+    console.error('Error details:', {
+      name: err.name,
+      message: err.message,
+      stack: err.stack
+    });
+
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching incidents',
+      error: err.message
+    });
+  }
+};

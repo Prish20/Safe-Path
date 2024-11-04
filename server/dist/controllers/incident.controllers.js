@@ -2,9 +2,20 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-Object.defineProperty(exports, "reportIncident", {
-    enumerable: true,
-    get: function() {
+function _export(target, all) {
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: all[name]
+    });
+}
+_export(exports, {
+    getAllIncidents: function() {
+        return getAllIncidents;
+    },
+    getIncident: function() {
+        return getIncident;
+    },
+    reportIncident: function() {
         return reportIncident;
     }
 });
@@ -53,6 +64,58 @@ const reportIncident = async (req, res)=>{
         res.status(500).json({
             success: false,
             message: 'Error reporting incident',
+            error: err.message
+        });
+    }
+};
+const getIncident = async (req, res)=>{
+    try {
+        const { id } = req.params;
+        const incident = await _incidentmodel.default.findById(id);
+        if (!incident) {
+            res.status(404).json({
+                success: false,
+                message: 'Incident not found'
+            });
+            return;
+        }
+        res.status(200).json({
+            success: true,
+            incident
+        });
+    } catch (error) {
+        const err = error;
+        console.error('Error details:', {
+            name: err.name,
+            message: err.message,
+            stack: err.stack
+        });
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching incident',
+            error: err.message
+        });
+    }
+};
+const getAllIncidents = async (_req, res)=>{
+    try {
+        const incidents = await _incidentmodel.default.find().sort({
+            createdAt: -1
+        });
+        res.status(200).json({
+            success: true,
+            incidents
+        });
+    } catch (error) {
+        const err = error;
+        console.error('Error details:', {
+            name: err.name,
+            message: err.message,
+            stack: err.stack
+        });
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching incidents',
             error: err.message
         });
     }

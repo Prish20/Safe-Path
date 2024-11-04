@@ -8,12 +8,8 @@ type SeparatorProp = {
   className?: string;
 };
 
-const Separator: React.FC<SeparatorProp> = ({ color, className }) => {
-  return (
-    <hr
-      className={`${className} ${color || 'bg-slate-300'} h-[1px] w-full  my-4`}
-    />
-  );
+const Separator: React.FC<SeparatorProp> = ({ className }) => {
+  return <hr className={`border-0 ${className} h-[1px] w-full my-4`} />;
 };
 
 export default Separator;

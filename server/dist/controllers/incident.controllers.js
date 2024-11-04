@@ -27,12 +27,13 @@ function _interop_require_default(obj) {
 }
 const reportIncident = async (req, res)=>{
     try {
-        const { type, description, location, images } = req.body;
+        const { type, description, location, images, coordinates } = req.body;
         console.log('Received incident data:', {
             type,
             description,
             location,
-            images
+            images,
+            coordinates
         });
         if (!type || !description || !location) {
             res.status(400).json({
@@ -44,6 +45,7 @@ const reportIncident = async (req, res)=>{
             type,
             description,
             location,
+            coordinates,
             images: images || [],
             status: 'pending'
         });

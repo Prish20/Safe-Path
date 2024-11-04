@@ -6,9 +6,9 @@ export const reportIncident = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { type, description, location, images } = req.body;
+    const { type, description, location, images, coordinates } = req.body;
     
-    console.log('Received incident data:', { type, description, location, images });
+    console.log('Received incident data:', { type, description, location, images, coordinates });
     
     if (!type || !description || !location) {
       res.status(400).json({ message: 'Missing required fields' });
@@ -19,6 +19,7 @@ export const reportIncident = async (
       type,
       description,
       location,
+      coordinates,
       images: images || [],
       status: 'pending'
     });

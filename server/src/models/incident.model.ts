@@ -24,6 +24,14 @@ const incidentSchema = new mongoose.Schema({
     ref: 'User',
     required: false
   },
+  coordinates: {
+    _id: false,
+    type: {
+      lat: Number,
+      lng: Number
+    },
+    required: false
+  },
   status: {
     type: String,
     enum: ['pending', 'investigating', 'resolved'],

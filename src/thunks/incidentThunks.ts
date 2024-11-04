@@ -1,10 +1,9 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { Incident } from '@/types/incident';
+// import { createAsyncThunk } from '@reduxjs/toolkit';
 
-export const getAllIncidents = createAsyncThunk(
-  'incidents/getAll',
-  async () => {
-    const response = await fetch('/api/incidents');
-    return response.json() as Promise<Incident[]>;
-  }
-); 
+// export const getAllIncidents = createAsyncThunk(
+//   'incidents/getAll',
+//   async () => {
+//     const response = await fetch('/api/incidents');
+//     return response.json() as Promise<Incident[]>;
+//   }
+// ); 

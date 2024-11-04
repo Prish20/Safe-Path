@@ -2,6 +2,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { userActions } from "./userSlice";
 
+const API_BASE_URL = 'https://safe-path-frontend.vercel.app';
+
 export const registerUser = createAsyncThunk(
   "user/register",
   async (
@@ -15,7 +17,7 @@ export const registerUser = createAsyncThunk(
   ) => {
     try {
       dispatch(userActions.signUpStart());
-      const response = await fetch("/api/auth/signup", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +52,7 @@ export const verifyOtp = createAsyncThunk(
   ) => {
     try {
       dispatch(userActions.verifyOtpStart());
-      const response = await fetch("/api/auth/verify-email", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/verify-email`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +88,7 @@ export const signInUser = createAsyncThunk(
   ) => {
     try {
       dispatch(userActions.signInStart());
-      const response = await fetch("/api/auth/signin", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,7 +119,7 @@ export const requestPasswordReset = createAsyncThunk(
   async (email: string, { dispatch, rejectWithValue }) => {
     try {
       dispatch(userActions.requestPasswordResetStart());
-      const response = await fetch("/api/auth/forgot-password", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -155,7 +157,7 @@ export const resetPassword = createAsyncThunk(
     try {
       dispatch(userActions.resetPasswordStart());
       const response = await fetch(
-        `/api/auth/reset-password/${resetData.token}`,
+        `${API_BASE_URL}/api/auth/reset-password/${resetData.token}`,
         {
           method: "POST",
           headers: {
@@ -189,7 +191,7 @@ export const handleLogout = createAsyncThunk(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       dispatch(userActions.signOutStart());
-      const response = await fetch("/api/auth/signout", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

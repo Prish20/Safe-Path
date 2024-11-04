@@ -6,4 +6,8 @@ export interface Incident {
   images?: string[];
   status: string;
   createdAt: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
 } 

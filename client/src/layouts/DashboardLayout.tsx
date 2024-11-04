@@ -14,10 +14,10 @@ const DashboardLayout = () => {
       <section className="flex-1 overflow-y-auto scrollbar-hide sm:scrollbar-thin">
         {/* Mobile Header */}
         <div
-          className="sm:hidden flex justify-between p-5 sm:pt-8 cursor-pointer"
+          className="sm:hidden flex justify-between p-5 sm:pt-8 cursor-pointer bg-gray-900"
           onClick={() => setShowMobileNav((prev) => !prev)}
         >
-          <LogoHeader />
+          <LogoHeader className="text-white" />
           <Menu
             size={32}
             color="green"

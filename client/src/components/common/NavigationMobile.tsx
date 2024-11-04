@@ -21,11 +21,11 @@ const NavigationMobile: React.FC<MobileNavType> = ({ showNav, setShowNav }) => {
   const pathname = useLocation().pathname;
   return (
     <aside
-      className={`h-full w-full flex-col justify-between bg-white p-6 pt-8 absolute top-0 transition-all duration-500 ease-in-out ${
+      className={`h-full w-full flex-col justify-between md:hidden bg-gray-900 p-6 pt-8 absolute top-0 transition-all duration-500 ease-in-out ${
         showNav ? 'left-0' : '-left-[100%]'
-      } z-10`}
+      } z-20`}
     >
-      <section className="mt-5">
+      <section className="mt-8">
         {/* Navigation */}
         <nav role="navigation" aria-label="Sidebar Navigation">
           <ul className="flex flex-col gap-2">
@@ -34,7 +34,7 @@ const NavigationMobile: React.FC<MobileNavType> = ({ showNav, setShowNav }) => {
                 <Link
                   to={link.route as To}
                   onClick={() => setShowNav((prev) => !prev)}
-                  className={`flex gap-2 px-2 py-3 rounded-md transition-all duration-100 ease-in text-gray-full hover:opacity-75 ${
+                  className={`flex gap-2 px-2 py-3 rounded-md transition-all duration-100 ease-in active:bg-emerald-500/20 text-white hover:opacity-75 hover:bg-green-700 ${
                     pathname === link.route &&
                     'bg-green-neutral text-primary-green font-bold'
                   }`}

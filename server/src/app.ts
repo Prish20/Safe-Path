@@ -13,7 +13,10 @@ app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://safe-path-frontend.vercel.app'],
+    origin: [
+      'http://localhost:5173',           // Frontend dev
+      'https://safe-path-frontend.vercel.app'  // Frontend prod
+    ],
     credentials: true,
   })
 );

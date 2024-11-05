@@ -21,7 +21,7 @@ const NotFound: React.FC<NotFoundProp> = ({
   buttonText,
 }) => {
   return (
-    <div className="z-20 mx-auto flex items-center justify-center rounded-lg p-5 font-poppins">
+    <div className="z-15 mx-auto flex items-center justify-center rounded-lg p-5 font-poppins">
       <div className="max-w-md text-center">
         {/* Not found image */}
         <div className="mx-auto mb-3 w-[80%] rounded-lg object-cover">

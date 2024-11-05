@@ -11,19 +11,10 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/public/server.js",
-      "headers": {
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Origin": "https://safe-path-frontend.vercel.app",
-        "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
-      }
-    },
-    { "src": "/static/(.*)", "dest": "/src/$1" },
-    { "src": "/(.*)", "dest": "/public/server.js" }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/public/server.js" },
+    { "source": "/static/(.*)", "destination": "/src/$1" },
+    { "source": "/(.*)", "destination": "/public/server.js" }
   ],
   "headers": [
     {

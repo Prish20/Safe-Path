@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "@/redux/store";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 const Oauth: React.FC = () => {
   const auth = getAuth(app);
   const dispatch = useDispatch<AppDispatch>();
@@ -44,7 +46,7 @@ const Oauth: React.FC = () => {
         photoURL: user.photoURL || "",
       };
 
-      const res = await fetch("/api/auth/google", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/google`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

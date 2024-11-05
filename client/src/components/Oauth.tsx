@@ -53,6 +53,7 @@ const Oauth: React.FC = () => {
         },
         credentials: "include",
         body: JSON.stringify(userData),
+        mode: "cors",
       });
 
       const data = await res.json();

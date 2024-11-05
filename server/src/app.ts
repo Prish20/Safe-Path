@@ -15,11 +15,16 @@ app.use(
   cors({
     origin: [
       'http://localhost:5173',           // Frontend dev
-      'https://safe-path-frontend.vercel.app'  // Frontend prod
+      'https://safe-path-frontend.vercel.app',  // Frontend prod
+      'https://safe-path-backend.vercel.app'    // Backend URL
     ],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
+
+app.options('*', cors()); // Enable preflight for all routes
 
 app.get('/', (_, res) => {
   res.send('Root endpoint check ');

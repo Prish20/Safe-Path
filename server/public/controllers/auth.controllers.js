@@ -123,7 +123,7 @@ const signup = async (req, res)=>{
             password: hashedPassword
         });
         await user.save();
-        (0, _generateTokenAndSetCookie.generateTokenAndSetCookie)(res, user._id);
+        (0, _generateTokenAndSetCookie.generateTokenAndSetCookie)(res, user._id.toString());
         await (0, _email.sendVerificationEmail)(user.email, verificationToken);
         res.status(201).json({
             message: "User created successfully",
@@ -190,7 +190,7 @@ const signin = async (req, res)=>{
             });
             return;
         }
-        (0, _generateTokenAndSetCookie.generateTokenAndSetCookie)(res, user._id);
+        (0, _generateTokenAndSetCookie.generateTokenAndSetCookie)(res, user._id.toString());
         user.lastLogin = new Date();
         await user.save();
         res.status(200).json({

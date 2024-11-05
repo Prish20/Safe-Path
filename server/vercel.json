@@ -5,14 +5,20 @@
     {
       "src": "public/server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "src/**/*",
+      "use": "@vercel/static"
     }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/public/server.js" }
+    { "source": "/api/(.*)", "destination": "/public/server.js" },
+    { "source": "/static/(.*)", "destination": "/src/$1" },
+    { "source": "/(.*)", "destination": "/public/server.js" }
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
         { "key": "Access-Control-Allow-Origin", "value": "https://safe-path-frontend.vercel.app" },

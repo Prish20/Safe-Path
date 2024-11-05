@@ -1,15 +1,5 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "dist/**/*",
-      "use": "@vercel/static"
-    }
-  ],
-  "buildCommand": "npm run build",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/dist/index.html" }
-  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/dist/index.html" }],
   "headers": [
     {
       "source": "/(.*)",

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { CustomInput } from "@/components/customComponents/customInput";
-import { CircleArrowRight, Mail, UserRound } from "lucide-react";
+import { Mail, UserRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "@/components/common/PassStrength";
 import { z } from "zod";
@@ -10,12 +10,12 @@ import { registerSchema } from "@/lib/validationSchema";
 import EmailVerificationModal from "@/components/customComponents/EmailVerificationModal";
 import PasswordInput from "@/components/customComponents/PasswordInput";
 import LoadingButton from "@/components/customComponents/LoadingButton";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { registerUser } from "@/user/userThunks";
 import { verifyOtp } from "@/user/userThunks";
+import Oauth from "@/components/Oauth";
 
 interface Errors {
   firstName?: string;
@@ -109,12 +109,6 @@ const Register = () => {
       console.error("message:", error);
       setErrorMessage(error as string);
     }
-  };
-
-  // Handler for Google Sign-In
-  const handleGoogleSignIn = () => {
-    // Implement Google Sign-In logic here
-    console.log("Google Sign-In clicked");
   };
 
   return (
@@ -235,17 +229,10 @@ const Register = () => {
 
           <p className="text-center mt-4 text-gray-400">or</p>
 
-          <Button
-            size="lg"
-            className="mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl hover:shadow-emerald-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
-            onClick={handleGoogleSignIn}
-            disabled={isLoading || isModalOpen}
-          >
-            <div className="flex justify-center items-center gap-2">
-              <CircleArrowRight />
-              Continue with Google
-            </div>
-          </Button>
+          <div className="flex justify-center items-center gap-2 mt-4">
+            <Oauth />
+          </div>
+
           <div className="flex flex-row justify-center mt-4 gap-2">
             <p className="text-gray-400">Already have an account?</p>
             <span className="text-emerald-500 underline">

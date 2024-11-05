@@ -33,9 +33,11 @@ const userSchema = new _mongoose.default.Schema({
         trim: true,
         unique: true
     },
+    photoURL: {
+        type: String
+    },
     password: {
-        type: String,
-        required: true
+        type: String
     },
     lastLogin: {
         type: Date,

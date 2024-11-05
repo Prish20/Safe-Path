@@ -7,7 +7,7 @@ import {
   Eye,
   EyeOff,
   LockKeyhole,
-  CircleArrowRight,
+  // CircleArrowRight,
   Loader,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import { signInUser, verifyOtp, requestPasswordReset } from "@/user/userThunks";
 import { toast } from "sonner";
 import EmailVerificationModal from "@/components/customComponents/EmailVerificationModal";
 import { DASHBOARD_PATH } from "@/routes/paths";
+import Oauth from "@/components/Oauth";
 
 interface Errors {
   email?: string;
@@ -103,12 +104,6 @@ const SignIn = () => {
   const handleSuccessfulVerification = () => {
     setIsEmailVerificationModalOpen(false);
     navigate(DASHBOARD_PATH.home);
-  };
-
-  // Handler for Google Sign-In
-  const handleGoogleSignIn = () => {
-    // Implement Google Sign-In logic here
-    console.log("Google Sign-In clicked");
   };
 
   // Update the handlePasswordReset function
@@ -260,17 +255,10 @@ const SignIn = () => {
 
           <p className="text-center mt-4 text-gray-400">or</p>
 
-          <Button
-            size="lg"
-            className="mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-xl hover:shadow-emerald-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
-            onClick={handleGoogleSignIn}
-            disabled={isLoading || isForgotPasswordModalOpen}
-          >
-            <div className="flex justify-center items-center gap-2">
-              <CircleArrowRight />
-              Continue with Google
-            </div>
-          </Button>
+          <div className="flex flex-row justify-center mt-4 gap-2">
+            <Oauth />
+          </div>
+
           <div className="flex flex-row justify-center mt-4 gap-2">
             <p className="text-gray-400">Don't have an account?</p>
             <span className="text-emerald-500 underline">

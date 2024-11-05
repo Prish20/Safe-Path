@@ -15,6 +15,9 @@ _export(exports, {
     forgotPassword: function() {
         return forgotPassword;
     },
+    googleSignIn: function() {
+        return googleSignIn;
+    },
     resetPassword: function() {
         return resetPassword;
     },
@@ -182,7 +185,7 @@ const signin = async (req, res)=>{
             });
             return;
         }
-        const isMatch = _bcryptjs.default.compareSync(password, user.password);
+        const isMatch = user.password ? _bcryptjs.default.compareSync(password, user.password) : false;
         if (!isMatch) {
             res.status(400).json({
                 success: false,
@@ -304,6 +307,49 @@ const checkAuth = async (req, res)=>{
         res.status(500).json({
             success: false,
             message: error.message
+        });
+    }
+};
+const googleSignIn = async (req, res)=>{
+    const { firstName, lastName, email, photoURL } = req.body;
+    try {
+        if (!firstName || !lastName || !email) {
+            return res.status(400).json({
+                error: "All fields are required"
+            });
+        }
+        let user = await _usermodel.User.findOne({
+            email
+        });
+        if (user) {
+            user.lastLogin = new Date();
+            user.photoURL = photoURL || user.photoURL;
+            await user.save();
+        } else {
+            user = new _usermodel.User({
+                firstName,
+                lastName,
+                email,
+                photoURL,
+                isVerified: true,
+                lastLogin: new Date()
+            });
+            await user.save();
+        }
+        (0, _generateTokenAndSetCookie.generateTokenAndSetCookie)(res, user._id.toString());
+        return res.status(200).json({
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            photoURL: user.photoURL,
+            isVerified: user.isVerified,
+            lastLogin: user.lastLogin
+        });
+    } catch (error) {
+        console.error("Google Sign-In Error:", error);
+        return res.status(500).json({
+            error: "Authentication failed"
         });
     }
 };

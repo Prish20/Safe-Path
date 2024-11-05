@@ -41,7 +41,7 @@ export const signup: RequestHandler = async (req, res): Promise<void> => {
     });
 
     await user.save();
-    generateTokenAndSetCookie(res, user._id);
+    generateTokenAndSetCookie(res, user._id.toString());
     await sendVerificationEmail(user.email, verificationToken);
     res.status(201).json({
       message: "User created successfully",
@@ -104,7 +104,7 @@ export const signin: RequestHandler = async (req, res): Promise<void> => {
       });
       return;
     }
-    generateTokenAndSetCookie(res, user._id);
+    generateTokenAndSetCookie(res, user._id.toString());
     user.lastLogin = new Date();
     await user.save();
     res.status(200).json({

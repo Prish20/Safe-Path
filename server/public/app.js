@@ -28,10 +28,23 @@ app.use((0, _cookieparser.default)());
 app.use((0, _cors.default)({
     origin: [
         'http://localhost:5173',
-        'https://safe-path-frontend.vercel.app' // Frontend prod
+        'https://safe-path-frontend.vercel.app',
+        'https://safe-path-backend.vercel.app' // Backend URL
     ],
-    credentials: true
+    credentials: true,
+    methods: [
+        'GET',
+        'POST',
+        'PUT',
+        'DELETE',
+        'OPTIONS'
+    ],
+    allowedHeaders: [
+        'Content-Type',
+        'Authorization'
+    ]
 }));
+app.options('*', (0, _cors.default)()); // Enable preflight for all routes
 app.get('/', (_, res)=>{
     res.send('Root endpoint check ');
 });

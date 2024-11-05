@@ -1,14 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 export const getAllIncidents = createAsyncThunk(
   "user/getAllIncidents",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/incident", {
+      const response = await fetch(`${API_BASE_URL}/api/incident`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: 'include',
       });
 
       if (!response.ok) {

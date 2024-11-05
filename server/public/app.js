@@ -41,7 +41,13 @@ app.use((0, _cors.default)({
     ],
     allowedHeaders: [
         'Content-Type',
-        'Authorization'
+        'Authorization',
+        'Accept',
+        'Origin',
+        'X-Requested-With'
+    ],
+    exposedHeaders: [
+        'Set-Cookie'
     ]
 }));
 app.options('*', (0, _cors.default)()); // Enable preflight for all routes

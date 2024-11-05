@@ -31,6 +31,7 @@ A web-based application designed to enhance community safety by providing real-t
 - **Frontend**: React, TypeScript + SWC, Vite, Tailwind CSS, Firebase (for user authentication)
 - **Backend**: Node.js, Express, TypeScript, MongoDB
 - **Other Tools**: Redux for state management, Mailtrap for email sending, Vercel for deployment
+- **Google Maps API**: Used for google maps functionality
 
 ## Getting Started
 

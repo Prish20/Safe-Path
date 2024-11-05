@@ -6,6 +6,7 @@
       "use": "@vercel/static"
     }
   ],
+  "buildCommand": "npm run build",
   "rewrites": [
     { "source": "/(.*)", "destination": "/dist/index.html" }
   ],

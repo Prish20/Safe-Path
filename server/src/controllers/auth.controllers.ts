@@ -85,7 +85,7 @@ export const verifyEmail: RequestHandler = async (req, res): Promise<void> => {
   }
 };
 
-export const signin: RequestHandler = async (req, res): Promise<void> => {
+export const signin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -96,7 +96,9 @@ export const signin: RequestHandler = async (req, res): Promise<void> => {
       });
       return;
     }
-    const isMatch = bcryptjs.compareSync(password, user.password);
+    const isMatch = user.password
+      ? bcryptjs.compareSync(password, user.password)
+      : false;
     if (!isMatch) {
       res.status(400).json({
         success: false,
@@ -209,5 +211,47 @@ export const checkAuth: RequestHandler = async (req: CustomRequest, res) => {
   } catch (error) {
     console.error(`Error checking auth: ${error}`);
     res.status(500).json({ success: false, message: (error as any).message });
+  }
+};
+
+export const googleSignIn = async (req: Request, res: Response) => {
+  const { firstName, lastName, email, photoURL } = req.body;
+  try {
+    if (!firstName || !lastName || !email) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      user.lastLogin = new Date();
+      user.photoURL = photoURL || user.photoURL;
+      await user.save();
+    } else {
+      user = new User({
+        firstName,
+        lastName,
+        email,
+        photoURL,
+        isVerified: true,
+        lastLogin: new Date(),
+      });
+      await user.save();
+    }
+
+    generateTokenAndSetCookie(res, user._id.toString());
+
+    return res.status(200).json({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      photoURL: user.photoURL,
+      isVerified: user.isVerified,
+      lastLogin: user.lastLogin,
+    });
+  } catch (error) {
+    console.error("Google Sign-In Error:", error);
+    return res.status(500).json({ error: "Authentication failed" });
   }
 };

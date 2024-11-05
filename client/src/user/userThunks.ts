@@ -93,6 +93,7 @@ export const signInUser = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: 'include',
         body: JSON.stringify(userData),
       });
 
@@ -124,6 +125,7 @@ export const requestPasswordReset = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: 'include',
         body: JSON.stringify({ email }),
       });
 
@@ -163,6 +165,7 @@ export const resetPassword = createAsyncThunk(
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: 'include',
           body: JSON.stringify({ password: resetData.password }),
         }
       );
@@ -195,7 +198,8 @@ export const handleLogout = createAsyncThunk(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },
+          },
+        credentials: 'include',
       });
 
       if (!response.ok) {

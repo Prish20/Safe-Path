@@ -28,7 +28,7 @@ app.use((0, _cookieparser.default)());
 app.use((0, _cors.default)({
     origin: [
         'http://localhost:5173',
-        'https://safe-path-frontend.vercel.app'
+        'https://safe-path-frontend.vercel.app' // Frontend prod
     ],
     credentials: true
 }));

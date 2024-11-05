@@ -2,6 +2,10 @@
 
 A web-based application designed to enhance community safety by providing real-time incident reporting and safe navigation options. This project includes both a client-side and server-side, allowing users to report incidents, view reported incidents on a map, and receive community updates.
 
+## API Documentation
+
+[Safe Path](https://documenter.getpostman.com/view/38814263/2sAY4yg1sg)
+
 ## Table of Contents
 
 - [Features](#features)

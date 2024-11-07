@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getAllIncidents } from "../thunks/incidentThunks";
-import { Incident } from '@/types/incident';
+import { Incident } from "@/types/incident";
 
 interface IncidentState {
   incidents: Incident[];
@@ -35,4 +35,4 @@ const incidentSlice = createSlice({
   },
 });
 
-export default incidentSlice.reducer; 
+export default incidentSlice.reducer;

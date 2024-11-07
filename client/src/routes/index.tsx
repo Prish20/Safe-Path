@@ -14,10 +14,17 @@ const ResetPassword = lazy(
   () => import("@/components/pages/auth/ResetPassword")
 );
 const DashboardHome = lazy(() => import("@/components/pages/dashboard/Home"));
-const IncidentReporting = lazy(() => import("@/components/pages/dashboard/IncidentReporting"));
+const IncidentReporting = lazy(
+  () => import("@/components/pages/dashboard/IncidentReporting")
+);
 const Map = lazy(() => import("@/components/pages/dashboard/MapNavigation"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
-const CommunityEngagement = lazy(() => import("@/components/pages/dashboard/CommunityEngagement"));
+const CommunityEngagement = lazy(
+  () => import("@/components/pages/dashboard/CommunityEngagement")
+);
+const IncidentDetails = lazy(
+  () => import("@/components/pages/dashboard/IncidentDetails")
+);
 
 // Components
 // import Loadable from '@/components/Loadable';
@@ -65,7 +72,11 @@ const routes: RouteObject[] = [
       { path: "home", element: withLoadable(DashboardHome) },
       { path: "incident-reporting", element: withLoadable(IncidentReporting) },
       { path: "map", element: withLoadable(Map) },
-      { path: "community-engagement", element: withLoadable(CommunityEngagement) },
+      {
+        path: "community-engagement",
+        element: withLoadable(CommunityEngagement),
+      },
+      { path: "incident/:id", element: withLoadable(IncidentDetails) },
       {
         path: "*",
         element: withLoadable(NotFound),

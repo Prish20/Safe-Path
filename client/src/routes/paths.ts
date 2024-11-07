@@ -23,4 +23,5 @@ export const DASHBOARD_PATH = {
   incidentReporting: path(ROOTS_DASHBOARD, "/incident-reporting"),
   map: path(ROOTS_DASHBOARD, "/map"),
   communityEngagement: path(ROOTS_DASHBOARD, "/community-engagement"),
+  incidentDetails: path(ROOTS_DASHBOARD, "/incident/:id"),
 };

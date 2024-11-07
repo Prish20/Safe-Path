@@ -56,7 +56,7 @@ const IncidentDetails = () => {
         <Button
           onClick={() => navigate(-1)}
           size="sm"
-          className="bg-green-500 hover:bg-green-500 text-white w-3/4"
+          className="bg-green-500 hover:bg-green-500 text-white"
         >
           Back
         </Button>
